@@ -1,0 +1,54 @@
+@font-face {
+    font-family: 'Copperplate';
+    src: url('../fonts/Copperplate.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Fet';
+    src: url('../fonts/Fet.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vivl_Rail';
+    src: url('../fonts/Vivl_Rail.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+html, body {
+    background-color: black;
+    text-align: center;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-family: Vivl_Rail, serif;
+    font-weight: normal;
+    font-size: 3rem;
+    margin: 35px auto 7px;
+}
+
+hr {
+    width: 45%;
+    margin: 3px auto;
+    padding: 0;
+}
+
+#underline_quote {
+    font-family: Fet, serif;
+    font-weight: normal;
+    font-size: 1.2em;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
