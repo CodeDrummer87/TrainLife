@@ -22,12 +22,19 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'SonyEricssonLogo';
+    src: url('../fonts/SonyEricssonLogo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 html, body {
-    background-color: black;
     text-align: center;
-    color: white;
     margin: 0;
     padding: 0;
+    color: burlywood;
 }
 
 h1 {
@@ -39,16 +46,64 @@ h1 {
 
 hr {
     width: 45%;
+    height: 1px;
     margin: 3px auto;
     padding: 0;
+    outline: none;
+    border: none;
+    background-color: burlywood;
 }
 
 #underline_quote {
     font-family: Fet, serif;
     font-weight: normal;
     font-size: 1.2em;
-    color: white;
     margin: 0;
     padding: 0;
 }
 
+
+
+.container {
+    display: grid;
+    width: 100vw;
+    height: 100vh;
+    background-color: #062d3e;
+    justify-content: center;
+    align-content: center;
+}
+
+header, footer {
+    display: flex;
+    font-family: Copperplate, serif;
+}
+
+header {
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+footer {
+    justify-content: space-between;
+    font-size: 0.87rem;
+}
+
+.inner-container {
+    display: grid;
+    width: 90vw;
+    height: 87vh;
+    background-color: rgba(5, 18, 21, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 5px 5px rgba(10, 86, 119, 0.7);
+    align-content: start;
+}
+
+#sign_in, #register {
+    cursor: pointer;
+}
+
+#sign_in:hover, #register:hover {
+    color: #21a4a8;
+    box-shadow: 0 0 2px 2px rgb(209, 168, 86, 0.2);
+    border-radius: 4px;
+}
