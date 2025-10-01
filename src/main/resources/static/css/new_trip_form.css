@@ -32,13 +32,27 @@ legend {
 #loco_photo {
     cursor: pointer;
     width: 90%;
-    height: 55%;
+    height: 50%;
     border-radius: 50%;
     outline: none;
 }
 
 #loco_photo:hover {
     border-color: #70d30e;
+}
+
+/*#div_new_trip_buttons {*/
+/*    grid-area: B;*/
+/*}*/
+
+#div_date_loco, #div_loco_series_number {
+    display: flex;
+    justify-content: space-between;
+}
+
+#div_date_loco>p, #div_loco_series_number>p {
+    margin: 0;
+    padding: 0;
 }
 
 #all_train_data {
@@ -101,12 +115,13 @@ legend {
     width: 87%;
 }
 
+#div_new_trip_buttons>p,
 #div_brake_test>p,
 #div_stations_passed>p,
 #div_limits>p,
 #div_stops>p,
 #notes>p {
-    margin: 10px 0 0 0;
+    margin: 7px 0 0 0;
     padding: 0;
 }
 
@@ -121,4 +136,6 @@ legend {
 .notes_header {
     font-family: Vivl_Rail, serif;
     font-size: 0.77rem;
+    margin: 5px 0 0 0;
+    padding: 0;
 }

@@ -29,12 +29,15 @@
                 <div id="new_trip_form">
                     <fieldset>
                         <legend>Новая поездка</legend>
-                        <p>
-                            Явка: <span>установить</span> ||
-                            Локомотив: <span>серия</span>-<span>номер</span>
-                            Депо приписки: <span>установить</span>
-                            ТБ: <span>количество</span>
-                        </p>
+                        <div id="div_date_loco">
+                            <p>Явка: <span>установить</span></p>
+                            <div id="div_loco_series_number">
+                                <p>Локомотив: <span>серия</span>-</p>
+                                <p><span>номер </span></p>
+                                <p>&nbsp;(Депо приписки: <span>установить</span>)</p>
+                            </div>
+                            <p>ТБ: <span>количество</span></p>
+                        </div>
                         <hr>
                         <p><span>станция отправления</span> - <span>станция прибытия</span></p>
                         <div id="all_train_data">
@@ -84,7 +87,10 @@
                     <div id="photo_uploader">
                         <h3>Фотографии локомотива</h3>
                         <img id="loco_photo" src="images/add_loco_img.png" title="Загрузить фотографии">
-                        <p id="photo_upload_status">&nbsp;</p>
+                        <div id="div_new_trip_buttons">
+                            <p><span>Сохранить поездку</span></p>
+                            <p id="new_trip_current_message">&nbsp;</p>
+                        </div>
                     </div>
                 </div>
             </article>
