@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
     <meta charset="UTF-8">
     <title>Поездная жизнь</title>
 
     <link rel="stylesheet" href="/css/file.css">
+    <link rel="stylesheet" href="/css/new_trip_form.css">
 </head>
 <body>
     <div class="container">
@@ -12,9 +14,80 @@
             <p><span id="sign_in">войти</span> &#9733 <span id="register">регистрация</span></p>
         </header>
         <div class="inner-container">
-            <h1>- Поездная жизнь -</h1>
-            <hr>
-            <p id="underline_quote">За горизонт тебя ведёт Магистраль...</p>
+            <div class="inner-header">
+                <h1>- Поездная жизнь -</h1>
+                <hr>
+                <p id="underline_quote">За горизонт тебя ведёт Магистраль...</p>
+            </div>
+            <nav>
+                <h3>Поездки</h3>
+                <p>Новая</p>
+                <p>Список</p>
+                <p>Статистика</p>
+            </nav>
+            <article>
+                <div id="new_trip_form">
+                    <fieldset>
+                        <legend>Новая поездка</legend>
+                        <p>
+                            Явка: <span>установить</span> ||
+                            Локомотив: <span>серия</span>-<span>номер</span>
+                            Депо приписки: <span>установить</span>
+                            ТБ: <span>количество</span>
+                        </p>
+                        <hr>
+                        <p><span>станция отправления</span> - <span>станция прибытия</span></p>
+                        <div id="all_train_data">
+                            <div id="departure">
+                                <h4><u>отправление:</u></h4>
+                                <p><span>время</span></p>
+                                <p>(<span>светофор</span>)</p>
+                            </div>
+                            <div id="train_data">
+                                <p>№ поезда: <span>номер</span></p>
+                                <p>Вес: <span>масса поезда</span>, тонн</p>
+                                <p>Оси: <span>количество осей</span></p>
+                                <p>УД: <span>условная длина</span></p>
+                                <p>ХВ: <span>номер хвостового вагона</span></p>
+                                <p>Закрепление: <span>расчёт закрепления</span></p>
+                            </div>
+                            <div id="arrival">
+                                <h4><u>прибытие:</u></h4>
+                                <p><span>время</span></p>
+                                <p>(<span>светофор</span>)</p>
+                            </div>
+                        </div>
+                        <div id="div_brake_test">
+                            <p class="brake_test_header">Проба Тормозов: <span>добавить</span></p>
+                        </div>
+                        <div id="div_stations_passed">
+                            <hr>
+                            <p class="stations_passed_header">проследовали:</p>
+                            <p><span>добавить</span></p>
+                        </div>
+                        <div id="div_limits">
+                            <hr>
+                            <p class="limits_header">ограничения:</p>
+                            <p><span>добавить</span></p>
+                        </div>
+                        <div id="div_stops">
+                            <hr>
+                            <p class="stops_header">стоянки:</p>
+                            <p><span>добавить</span></p>
+                        </div>
+                        <div id="notes">
+                            <hr>
+                            <p class="notes_header">заметки на полях:</p>
+                            <p><span>добавить</span></p>
+                        </div>
+                    </fieldset>
+                    <div id="photo_uploader">
+                        <h3>Фотографии локомотива</h3>
+                        <img id="loco_photo" src="images/add_loco_img.png" title="Загрузить фотографии">
+                        <p id="photo_upload_status">&nbsp;</p>
+                    </div>
+                </div>
+            </article>
         </div>
         <footer>
             <p>Поездная жизнь - 2025 г.</p>

@@ -35,6 +35,7 @@ html, body {
     margin: 0;
     padding: 0;
     color: burlywood;
+    font-family: SonyEricssonLogo, serif;
 }
 
 h1 {
@@ -73,8 +74,9 @@ hr {
     align-content: center;
 }
 
-header, footer {
-    display: flex;
+header, footer { display: flex; }
+
+h3, header, footer, legend {
     font-family: Copperplate, serif;
 }
 
@@ -96,14 +98,40 @@ footer {
     border-radius: 10px;
     box-shadow: 0 0 5px 5px rgba(10, 86, 119, 0.7);
     align-content: start;
+
+    grid-template-columns: 20% 80%;
+    grid-template-rows: 20% 80%;
+    grid-template-areas:
+        "H H H"
+        "N A A";
 }
 
-#sign_in, #register {
+.inner-header {
+    grid-area: H;
+    align-self: start;
+}
+
+nav {
+    grid-area: N;
+}
+
+nav:hover {
+    border-color: rgba(30, 117, 16);
+}
+
+article {
+    grid-area: A;
+}
+
+span {
     cursor: pointer;
+    color: darkkhaki;
 }
 
-#sign_in:hover, #register:hover {
+span:hover {
     color: #21a4a8;
     box-shadow: 0 0 2px 2px rgb(209, 168, 86, 0.2);
     border-radius: 4px;
 }
+
+

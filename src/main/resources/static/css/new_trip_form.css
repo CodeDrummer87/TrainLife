@@ -1,0 +1,124 @@
+#new_trip_form {
+    display: grid;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: 97%;
+    height: 70vh;
+    grid-template-areas:
+        "F P"
+        "F P";
+    align-content: start;
+}
+
+fieldset {
+    grid-area: F;
+    width: 92%;
+    border-color: burlywood;
+    border-radius: 5px;
+    font-size: 0.95rem;
+}
+
+legend {
+    font-family: Vivl_Rail, serif;
+    font-size: 0.87rem;
+}
+
+#photo_uploader {
+    grid-area: P;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#loco_photo {
+    cursor: pointer;
+    width: 90%;
+    height: 55%;
+    border-radius: 50%;
+    outline: none;
+}
+
+#loco_photo:hover {
+    border-color: #70d30e;
+}
+
+#all_train_data {
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+}
+
+#train_data {
+    display: grid;
+    padding-left: 15px;
+    justify-items: start;
+}
+
+#train_data>p {
+    margin: 0;
+    padding-bottom: 1px;
+}
+#arrival, #departure {
+    display: grid;
+    align-items: start;
+}
+
+#departure {
+    border-right: 2px solid burlywood;
+}
+
+#arrival {
+    border-left: 2px solid burlywood;
+}
+
+#departure>h4, #arrival>h4 {
+    padding: 0;
+    margin: 0;
+    font-family: Vivl_Rail, serif;
+    font-size: 0.75rem;
+    color: #209f94;
+}
+
+#departure>p, #arrival>p {
+    margin: 0;
+    padding: 0;
+}
+
+#div_brake_test,
+#div_stations_passed,
+#div_limits,
+#div_stops,
+#notes {
+    display: grid;
+    justify-items: start;
+    margin: 0 0 0 15px;
+    padding: 0;
+
+}
+
+#div_stations_passed>hr,
+#div_limits>hr,
+#div_stops>hr,
+#notes>hr {
+    width: 87%;
+}
+
+#div_brake_test>p,
+#div_stations_passed>p,
+#div_limits>p,
+#div_stops>p,
+#notes>p {
+    margin: 10px 0 0 0;
+    padding: 0;
+}
+
+.limits_header {
+    color: #ff8a7b;
+}
+
+.brake_test_header,
+.stations_passed_header,
+.limits_header,
+.stops_header,
+.notes_header {
+    font-family: Vivl_Rail, serif;
+    font-size: 0.77rem;
+}
