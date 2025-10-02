@@ -47,3 +47,27 @@ async function convertToParagraph(input_time) {
     s_attendance.hidden = false;
     s_attendance.style.color = '#33cd9e';
 }
+
+//.:: Серия
+let p_series = document.getElementById('p_series');
+let s_series = document.getElementById('s_series');
+
+s_series.onclick = function() {
+    s_series.hidden = true;
+    let select = document.createElement('select');
+    let series = [ 'серия', 'ВЛ10', 'ВЛ10у', '2ЭС6', '2ЭС10' ];
+    for (let i = 0; i < series.length; i++) {
+        let option = document.createElement('option');
+        option.value = series[i];
+        option.innerHTML = series[i];
+        select.appendChild(option);
+    }
+
+    select.onchange = async function() {
+        select.hidden = true;
+        s_series.innerHTML = select.options[select.selectedIndex].innerText;
+        s_series.hidden = false;
+    }
+
+    p_series.appendChild(select);
+}
