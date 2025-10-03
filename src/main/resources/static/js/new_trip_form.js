@@ -40,8 +40,10 @@ async function formatDate(dateString, format = 'dd.mm.yy HH:MM') {
 
 async function convertToParagraph(input_time) {
     const date = new Date(input_time.value);
-    s_attendance.innerText = await formatDate(date);
+    let attendance_date = await formatDate(date);
+    s_attendance.innerText = attendance_date;
     sessionStorage.setItem('attendance', input_time.value);
+    sessionStorage.setItem('attendance_date', attendance_date);
 
     input_time.hidden = true;
     s_attendance.hidden = false;
@@ -59,15 +61,49 @@ s_series.onclick = function() {
     for (let i = 0; i < series.length; i++) {
         let option = document.createElement('option');
         option.value = series[i];
-        option.innerHTML = series[i];
+        option.innerText = series[i];
         select.appendChild(option);
     }
 
     select.onchange = async function() {
         select.hidden = true;
-        s_series.innerHTML = select.options[select.selectedIndex].innerText;
+        let series = select.options[select.selectedIndex].innerText;
+        sessionStorage.setItem('series', series);
+        s_series.innerText = series;
+        s_series.style.color = '#33cd9e';
         s_series.hidden = false;
     }
 
     p_series.appendChild(select);
+}
+
+//.:: Номер
+let p_loconumber = document.getElementById('p_loconumber');
+let s_loconumber = document.getElementById('s_loconumber');
+
+s_loconumber.onclick = function() {
+    s_loconumber.hidden = true;
+    let input = document.createElement('input');
+    input.value = sessionStorage.getItem('loconumber') === null ?
+        '' : sessionStorage.getItem('loconumber');
+    input.placeholder = 'номер';
+    p_loconumber.appendChild(input);
+
+    input.onblur = async function() {
+        await getLocoNumber(input);
+    }
+    input.onkeydown = async function(e) {
+        if (e.key === 'Enter') {
+            await getLocoNumber(input);
+        }
+    }
+
+}
+
+async function getLocoNumber(input) {
+    sessionStorage.setItem('loconumber', input.value);
+    s_loconumber.innerText = input.value;
+    s_loconumber.style.color = '#33cd9e';
+    input.hidden = true;
+    s_loconumber.hidden = false;
 }
