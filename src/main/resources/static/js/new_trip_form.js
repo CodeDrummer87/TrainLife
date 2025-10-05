@@ -87,7 +87,18 @@ s_loconumber.onclick = function() {
     input.value = sessionStorage.getItem('loconumber') === null ?
         '' : sessionStorage.getItem('loconumber');
     input.placeholder = 'номер';
+    input.autofocus = true;
+
+    input.addEventListener('keydown', function(event) {
+        let allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'];
+        if (!allowedInput.includes(event.key) || input.value.length > 3) {
+            if (event.key !== 'Backspace')
+                event.preventDefault();
+        }
+    });
+
     p_loconumber.appendChild(input);
+
 
     input.onblur = async function() {
         await getLocoNumber(input);
