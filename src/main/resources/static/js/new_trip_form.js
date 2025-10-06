@@ -65,7 +65,7 @@ s_series.onclick = function() {
         select.appendChild(option);
     }
 
-    select.onchange = async function() {
+    select.onchange = function() {
         select.hidden = true;
         let series = select.options[select.selectedIndex].innerText;
         sessionStorage.setItem('series', series);
@@ -117,4 +117,39 @@ async function getLocoNumber(input) {
     s_loconumber.style.color = '#33cd9e';
     input.hidden = true;
     s_loconumber.hidden = false;
+}
+
+//.:: Депо приписки
+let p_allocation = document.getElementById('p_allocation');
+let s_allocation = document.getElementById('s_allocation');
+
+s_allocation.onclick = function() {
+    s_allocation.hidden = true;
+
+    let select = document.createElement('select');
+    let allocations = [
+        'установить',
+        'Омск',
+        'Свердловск-сорт.',
+        'Курган',
+        'Петропавловск',
+        'Белово',
+        'Тайга'
+    ];
+    for (let i = 0; i < allocations.length; i++) {
+        let option = document.createElement('option');
+        option.value = allocations[i];
+        option.innerText = allocations[i];
+        select.appendChild(option);
+    }
+    p_allocation.appendChild(select);
+
+    select.onchange = function() {
+        select.hidden = true;
+        let allocation = select.options[select.selectedIndex].innerText;
+        sessionStorage.setItem('allocation', allocation);
+        s_allocation.innerText = allocation;
+        s_allocation.style.color = '#33cd9e';
+        s_allocation.hidden = false;
+    }
 }
