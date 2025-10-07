@@ -84,7 +84,7 @@ let s_loconumber = document.getElementById('s_loconumber');
 s_loconumber.onclick = function() {
     s_loconumber.hidden = true;
     let input = document.createElement('input');
-    input.value = sessionStorage.getItem('loconumber') === null ?
+    input.value = sessionStorage.getItem('loconumber') === null || sessionStorage.getItem('loconumber') === 'номер' ?
         '' : sessionStorage.getItem('loconumber');
     input.placeholder = 'номер';
     input.autofocus = true;
@@ -112,10 +112,12 @@ s_loconumber.onclick = function() {
 }
 
 async function getLocoNumber(input) {
-    sessionStorage.setItem('loconumber', input.value);
-    s_loconumber.innerText = input.value;
-    s_loconumber.style.color = '#33cd9e';
+
+    let value = input.value.trim().length === 0 ? 'номер' : input.value.trim();
+    sessionStorage.setItem('loconumber', value);
+    s_loconumber.innerText = value;
     input.hidden = true;
+    setValueAndColor(s_loconumber, 'loconumber', 'номер');
     s_loconumber.hidden = false;
 }
 
