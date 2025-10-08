@@ -50,6 +50,7 @@ legend {
     margin: 0;
     padding: 0;
     font-size: 0.8rem;
+    height: 19px;
 }
 
 #all_train_data {
@@ -140,11 +141,16 @@ fieldset>hr,
 
 input[type="datetime-local"], select, input {
     width: 150px;
+    height: 17px;
     border-radius: 4px;
     cursor:pointer;
     background-color: burlywood;
+    padding: 0;
+    margin: 0;
 }
 
-#p_series>select, #p_loconumber>input {
+#p_series>select,
+#p_loconumber>input,
+#p_brakeshoes>input {
     width: 57px;
 }

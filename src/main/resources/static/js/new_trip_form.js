@@ -11,19 +11,19 @@ s_attendance.onclick = function() {
         '2025-01-01T00:00' : sessionStorage.getItem('attendance');
     input_time.autofocus = true;
 
-    input_time.onblur = async function() {
-        await convertToParagraph(input_time);
+    input_time.onblur = function() {
+        convertToParagraph(input_time);
     }
-    input_time.onkeydown = async function(e) {
+    input_time.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            await convertToParagraph(input_time);
+            convertToParagraph(input_time);
         }
     }
 
     p_attendance.appendChild(input_time);
 }
 
-async function formatDate(dateString, format = 'dd.mm.yy HH:MM') {
+function formatDate(dateString, format = 'dd.mm.yy HH:MM') {
     const date = new Date(dateString);
     const result = {
         'dd': String(date.getDate()).padStart(2, '0'),
@@ -38,9 +38,9 @@ async function formatDate(dateString, format = 'dd.mm.yy HH:MM') {
     return format.replace(/dd|mm|yyyy|yy|HH|MM|ss/g, match => result[match]);
 }
 
-async function convertToParagraph(input_time) {
+function convertToParagraph(input_time) {
     const date = new Date(input_time.value);
-    let attendance_date = await formatDate(date);
+    let attendance_date = formatDate(date);
     s_attendance.innerText = attendance_date;
     sessionStorage.setItem('attendance', input_time.value);
     sessionStorage.setItem('attendance_date', attendance_date);
@@ -100,18 +100,18 @@ s_loconumber.onclick = function() {
     p_loconumber.appendChild(input);
 
 
-    input.onblur = async function() {
-        await getLocoNumber(input);
+    input.onblur = function() {
+        getLocoNumber(input);
     }
-    input.onkeydown = async function(e) {
+    input.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            await getLocoNumber(input);
+            getLocoNumber(input);
         }
     }
 
 }
 
-async function getLocoNumber(input) {
+function getLocoNumber(input) {
 
     let value = input.value.trim().length === 0 ? 'номер' : input.value.trim();
     sessionStorage.setItem('loconumber', value);
@@ -154,4 +154,45 @@ s_allocation.onclick = function() {
         s_allocation.style.color = '#33cd9e';
         s_allocation.hidden = false;
     }
+}
+
+//.:: Количество тормозных башмаков
+let p_brakeshoes = document.getElementById('p_brakeshoes');
+let s_brakeshoes = document.getElementById('s_brakeshoes');
+
+s_brakeshoes.onclick = function() {
+    s_brakeshoes.hidden = true;
+    let input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'кол-во';
+    input.value = '';
+    input.autofocus = true;
+
+    input.addEventListener('keydown', function(event) {
+        let allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'];
+        if (!allowedInput.includes(event.key) || input.value.length > 1) {
+            if (event.key !== 'Backspace')
+                event.preventDefault();
+        }
+    });
+
+    input.onblur = function() {
+        getNumberOfBrakeShoes(input);
+    }
+
+    input.onkeydown = function(e) {
+        if (e.key === 'Enter')
+            getNumberOfBrakeShoes(input);
+    }
+
+    p_brakeshoes.appendChild(input);
+}
+
+function getNumberOfBrakeShoes(input) {
+    let value = input.value.trim().length === 0 ? 'количество' : input.value.trim();
+    sessionStorage.setItem('brakeshoes', value);
+    s_brakeshoes.innerText = value;
+    input.hidden = true;
+    setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
+    s_brakeshoes.hidden = false;
 }
