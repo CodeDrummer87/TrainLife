@@ -9,5 +9,5 @@ function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
         value : sessionStorage.getItem(item);
 
-    element.style.color = element.innerText === value ? 'burlywood' : '#33cd9e';
+    element.style.color = element.innerText === value ? 'darkkhaki' : '#33cd9e';
 }
