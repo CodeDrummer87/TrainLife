@@ -108,17 +108,24 @@ s_loconumber.onclick = function() {
             getLocoNumber(input);
         }
     }
-
 }
 
 function getLocoNumber(input) {
-
     let value = input.value.trim().length === 0 ? 'номер' : input.value.trim();
+    value = validateLocoNumber(value);
     sessionStorage.setItem('loconumber', value);
     s_loconumber.innerText = value;
     input.hidden = true;
     setValueAndColor(s_loconumber, 'loconumber', 'номер');
     s_loconumber.hidden = false;
+}
+
+function validateLocoNumber(value) {
+    if (value === '0' || value === 'номер')
+        return 'номер';
+
+    return value.length === 1 ? '00' + value :
+        value.length === 2 ? '0' + value : value;
 }
 
 //.:: Депо приписки
@@ -169,7 +176,7 @@ s_brakeshoes.onclick = function() {
     input.autofocus = true;
 
     input.addEventListener('keydown', function(event) {
-        let allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'];
+        let allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace'];
         if (!allowedInput.includes(event.key) || input.value.length > 1) {
             if (event.key !== 'Backspace')
                 event.preventDefault();

@@ -68,6 +68,12 @@ legend {
     margin: 0;
     padding-bottom: 1px;
 }
+
+#div_stations {
+    display: flex;
+    justify-content: center;
+}
+
 #arrival, #departure {
     display: grid;
     align-items: start;
