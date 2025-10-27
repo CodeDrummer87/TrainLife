@@ -6,3 +6,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/tldb
     username: postgres
     password: postgres
+
+  flyway:
+    enabled: true
+    locations: classpath:db.migration
