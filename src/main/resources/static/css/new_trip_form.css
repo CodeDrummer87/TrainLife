@@ -74,6 +74,29 @@ legend {
     justify-content: center;
 }
 
+#p_departure_station {
+    display: inline-grid;
+    grid-template-areas: "A B C";
+}
+
+#s_turnout_point {
+    grid-area: A;
+    align-self: start;
+    font-size: 0.7rem;
+    margin-left: 0;
+    padding: 0;
+}
+
+#i_checkbox {
+    grid-area: B;
+    margin: 0;
+    padding: 0;
+}
+
+#s_departure_station {
+    grid-area: C;
+}
+
 #arrival, #departure {
     display: grid;
     align-items: start;

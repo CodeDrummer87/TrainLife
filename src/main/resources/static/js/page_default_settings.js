@@ -1,9 +1,14 @@
 const stationUrl = 'http://localhost:8080/api/v1/stations/allocations';
 let allStations = [];
 
+let s_turnout_point = document.getElementById('s_turnout_point');
+let i_checkbox = document.getElementById('i_checkbox');
+s_turnout_point.hidden = true;
+i_checkbox.hidden = true;
+
 async function initStations() {
     try {
-        allStations = await fetchStations(false);
+        allStations = await fetchStations();
     } catch(error) {
         console.error('Ошибка при инициализации станций: ' + error);
     }
@@ -11,10 +16,10 @@ async function initStations() {
 
 initStations();
 
-async function fetchStations(withTurnoutPoints) {
+async function fetchStations() {
     let allocationId = 1;
     try {
-        const uri = withTurnoutPoints ? `/${allocationId}/base-station-list` : `/${allocationId}/station-list`;
+        const uri = i_checkbox.checked ? `/${allocationId}/base-station-list` : `/${allocationId}/station-list`;
         const response = await fetch(stationUrl + uri);
 
         if (!response.ok) {

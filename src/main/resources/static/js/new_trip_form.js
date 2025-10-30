@@ -211,11 +211,29 @@ let s_departure_station = document.getElementById('s_departure_station');
 s_departure_station.onclick = function() {
     s_departure_station.hidden = true;
 
+    s_turnout_point.hidden = false;
+    i_checkbox.hidden = false;
+
+    let select = createStationSelect();
+    p_departure_station.appendChild(select);
+
+    i_checkbox.onchange = async function() {
+        await initStations();
+
+        select.remove();
+        select = createStationSelect();
+        p_departure_station.appendChild(select);
+    }
+}
+
+function createStationSelect() {
     let select = document.createElement('select');
 
     const defaultOption = document.createElement('option');
     defaultOption.value = 0;
     defaultOption.innerText = 'станция отправления';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
     select.appendChild(defaultOption);
 
     for (station of allStations) {
@@ -224,9 +242,11 @@ s_departure_station.onclick = function() {
         option.innerText = station.title;
         select.appendChild(option);
     }
-    p_departure_station.appendChild(select);
 
     select.onchange = function() {
+        s_turnout_point.hidden = true;
+        i_checkbox.hidden = true;
+
         select.hidden = true;
         let departureStation = select.options[select.selectedIndex].innerText;
         sessionStorage.setItem('departureStation', departureStation);
@@ -234,4 +254,6 @@ s_departure_station.onclick = function() {
         s_departure_station.style.color = '#33cd9e';
         s_departure_station.hidden = false;
     }
+
+    return select;
 }
