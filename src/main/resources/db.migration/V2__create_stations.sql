@@ -1,14 +1,14 @@
 CREATE TABLE IF NOT EXISTS stations(
     id SERIAL PRIMARY KEY,
     title VARCHAR(25) NOT NULL,
-    railway INTEGER NOT NULL,
+    railway_id INTEGER NOT NULL,
     code VARCHAR(6) NOT NULL UNIQUE,
     has_turnout_point BOOLEAN DEFAULT FALSE,
 
-    FOREIGN KEY (railway) REFERENCES railways(id) ON DELETE CASCADE
+    FOREIGN KEY (railway_id) REFERENCES railways(id) ON DELETE CASCADE
 );
 
-INSERT INTO stations (title, railway, code)
+INSERT INTO stations (title, railway_id, code)
 VALUES
     ('Входная', 5, '083020'),
     ('Карбышево-II', 5, '083266'),

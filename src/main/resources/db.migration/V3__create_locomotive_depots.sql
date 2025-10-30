@@ -1,15 +1,15 @@
 CREATE TABLE IF NOT EXISTS locomotive_depots(
     id SERIAL PRIMARY KEY,
-    railway INTEGER NOT NULL,
+    railway_id INTEGER NOT NULL,
     short_title VARCHAR(30),
     full_title VARCHAR(100),
     address VARCHAR (200),
     code VARCHAR(5),
 
-    FOREIGN KEY (railway) REFERENCES railways(id) ON DELETE CASCADE
+    FOREIGN KEY (railway_id) REFERENCES railways(id) ON DELETE CASCADE
 );
 
-INSERT INTO locomotive_depots (railway, short_title, full_title, address, code)
+INSERT INTO locomotive_depots (railway_id, short_title, full_title, address, code)
 VALUES
     (5, 'ТЧЭ-2 Омск', 'Эксплуатационное локомотивное депо Омск',
      'Россия, 644020, г.Омск-20, ул.Леконта, д.32', '201'),

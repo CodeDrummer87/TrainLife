@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS railways(
     id SERIAL PRIMARY KEY,
-    fulltitle VARCHAR(50) NOT NULL,
+    full_title VARCHAR(50) NOT NULL,
     abbreviation VARCHAR(10) NOT NULL,
     code VARCHAR(5) NOT NULL UNIQUE
 );
 
-INSERT INTO railways (fulltitle, abbreviation, code)
+INSERT INTO railways (full_title, abbreviation, code)
 VALUES
     ('Восточно-Сибирская железная дорога', 'ВСЖД', N'092'),
     ('Горьковская железная дорога', 'ГЖД', N'024'),
