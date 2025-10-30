@@ -203,3 +203,35 @@ function getNumberOfBrakeShoes(input) {
     setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
     s_brakeshoes.hidden = false;
 }
+
+//.:: Станция отправления
+let p_departure_station = document.getElementById('p_departure_station');
+let s_departure_station = document.getElementById('s_departure_station');
+
+s_departure_station.onclick = function() {
+    s_departure_station.hidden = true;
+
+    let select = document.createElement('select');
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = 0;
+    defaultOption.innerText = 'станция отправления';
+    select.appendChild(defaultOption);
+
+    for (station of allStations) {
+        let option = document.createElement('option');
+        option.value = station.id;
+        option.innerText = station.title;
+        select.appendChild(option);
+    }
+    p_departure_station.appendChild(select);
+
+    select.onchange = function() {
+        select.hidden = true;
+        let departureStation = select.options[select.selectedIndex].innerText;
+        sessionStorage.setItem('departureStation', departureStation);
+        s_departure_station.innerText = departureStation;
+        s_departure_station.style.color = '#33cd9e';
+        s_departure_station.hidden = false;
+    }
+}
