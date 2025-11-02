@@ -69,32 +69,32 @@ legend {
     padding-bottom: 1px;
 }
 
+#p_turnout_point {
+    margin: 0;
+    padding: 0;
+    font-size: 0.7rem;
+    visibility: hidden;
+}
+
+#p_turnout_point>input[type="checkbox"] {
+    width: 10px;
+    height: 10px;
+}
+
 #div_stations {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
-#p_departure_station {
-    display: inline-grid;
-    grid-template-areas: "A B C";
-}
-
-#s_turnout_point {
-    grid-area: A;
-    align-self: start;
-    font-size: 0.7rem;
-    margin-left: 0;
+#div_stations>p {
+    margin: 2px 0 10px 0;
     padding: 0;
 }
 
-#i_checkbox {
-    grid-area: B;
-    margin: 0;
+#div_stations>select {
+    margin: 2px 0 7px 0;
     padding: 0;
-}
-
-#s_departure_station {
-    grid-area: C;
 }
 
 #arrival, #departure {

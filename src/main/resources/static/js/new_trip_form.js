@@ -1,6 +1,6 @@
 //.:: Явка
-let p_attendance = document.getElementById('p_attendance');
-let s_attendance = document.getElementById('s_attendance');
+const p_attendance = document.getElementById('p_attendance');
+const s_attendance = document.getElementById('s_attendance');
 
 s_attendance.onclick = function() {
     s_attendance.hidden = true;
@@ -51,13 +51,13 @@ function convertToParagraph(input_time) {
 }
 
 //.:: Серия
-let p_series = document.getElementById('p_series');
-let s_series = document.getElementById('s_series');
+const p_series = document.getElementById('p_series');
+const s_series = document.getElementById('s_series');
 
 s_series.onclick = function() {
     s_series.hidden = true;
-    let select = document.createElement('select');
-    let series = [ 'серия', 'ВЛ10', 'ВЛ10у', '2ЭС6', '2ЭС10' ];
+    const select = document.createElement('select');
+    const series = [ 'серия', 'ВЛ10', 'ВЛ10у', '2ЭС6', '2ЭС10' ];
     for (let i = 0; i < series.length; i++) {
         let option = document.createElement('option');
         option.value = series[i];
@@ -67,7 +67,7 @@ s_series.onclick = function() {
 
     select.onchange = function() {
         select.hidden = true;
-        let series = select.options[select.selectedIndex].innerText;
+        const series = select.options[select.selectedIndex].innerText;
         sessionStorage.setItem('series', series);
         s_series.innerText = series;
         s_series.style.color = '#33cd9e';
@@ -78,19 +78,19 @@ s_series.onclick = function() {
 }
 
 //.:: Номер
-let p_loconumber = document.getElementById('p_loconumber');
-let s_loconumber = document.getElementById('s_loconumber');
+const p_loconumber = document.getElementById('p_loconumber');
+const s_loconumber = document.getElementById('s_loconumber');
 
 s_loconumber.onclick = function() {
     s_loconumber.hidden = true;
-    let input = document.createElement('input');
+    const input = document.createElement('input');
     input.value = sessionStorage.getItem('loconumber') === null || sessionStorage.getItem('loconumber') === 'номер' ?
         '' : sessionStorage.getItem('loconumber');
     input.placeholder = 'номер';
     input.autofocus = true;
 
     input.addEventListener('keydown', function(event) {
-        let allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'];
+        const allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'];
         if (!allowedInput.includes(event.key) || input.value.length > 3) {
             if (event.key !== 'Backspace')
                 event.preventDefault();
@@ -129,14 +129,14 @@ function validateLocoNumber(value) {
 }
 
 //.:: Депо приписки
-let p_allocation = document.getElementById('p_allocation');
-let s_allocation = document.getElementById('s_allocation');
+const p_allocation = document.getElementById('p_allocation');
+const s_allocation = document.getElementById('s_allocation');
 
 s_allocation.onclick = function() {
     s_allocation.hidden = true;
 
-    let select = document.createElement('select');
-    let allocations = [
+    const select = document.createElement('select');
+    const allocations = [
         'установить',
         'Омск',
         'Свердловск-сорт.',
@@ -164,19 +164,19 @@ s_allocation.onclick = function() {
 }
 
 //.:: Количество тормозных башмаков
-let p_brakeshoes = document.getElementById('p_brakeshoes');
-let s_brakeshoes = document.getElementById('s_brakeshoes');
+const p_brakeshoes = document.getElementById('p_brakeshoes');
+const s_brakeshoes = document.getElementById('s_brakeshoes');
 
 s_brakeshoes.onclick = function() {
     s_brakeshoes.hidden = true;
-    let input = document.createElement('input');
+    const input = document.createElement('input');
     input.type = 'text';
     input.placeholder = 'кол-во';
     input.value = '';
     input.autofocus = true;
 
     input.addEventListener('keydown', function(event) {
-        let allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace'];
+        const allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace'];
         if (!allowedInput.includes(event.key) || input.value.length > 1) {
             if (event.key !== 'Backspace')
                 event.preventDefault();
@@ -204,56 +204,66 @@ function getNumberOfBrakeShoes(input) {
     s_brakeshoes.hidden = false;
 }
 
-//.:: Станция отправления
-let p_departure_station = document.getElementById('p_departure_station');
-let s_departure_station = document.getElementById('s_departure_station');
+//.:: Станции отправления и прибытия
+const p_departure_station = document.getElementById('p_departure_station');
+const s_departure_station = document.getElementById('s_departure_station');
+const p_arrival_station = document.getElementById('p_arrival_station');
+const s_arrival_station = document.getElementById('s_arrival_station');
+const p_turnout_point = document.getElementById('p_turnout_point');
+const i_checkbox = document.getElementById('i_checkbox');
 
 s_departure_station.onclick = function() {
-    s_departure_station.hidden = true;
-
-    s_turnout_point.hidden = false;
-    i_checkbox.hidden = false;
-
-    let select = createStationSelect();
-    p_departure_station.appendChild(select);
-
-    i_checkbox.onchange = async function() {
-        await initStations();
-
-        select.remove();
-        select = createStationSelect();
-        p_departure_station.appendChild(select);
-    }
+    createAndSelectStation(p_departure_station, s_departure_station, 'станция отправления', true);
+}
+s_arrival_station.onclick = function() {
+    createAndSelectStation(p_arrival_station, s_arrival_station, 'станция прибытия', false);
 }
 
-function createStationSelect() {
-    let select = document.createElement('select');
+function createStationSelect(span_station, default_text, isDeparture) {
 
+    const select = document.createElement('select');
     const defaultOption = document.createElement('option');
     defaultOption.value = 0;
-    defaultOption.innerText = 'станция отправления';
+    defaultOption.innerText = default_text;
     defaultOption.disabled = true;
     defaultOption.selected = true;
     select.appendChild(defaultOption);
 
     for (station of allStations) {
-        let option = document.createElement('option');
+        const option = document.createElement('option');
         option.value = station.id;
         option.innerText = station.title;
         select.appendChild(option);
     }
 
     select.onchange = function() {
-        s_turnout_point.hidden = true;
-        i_checkbox.hidden = true;
 
+        p_turnout_point.style.visibility = 'hidden';
         select.hidden = true;
-        let departureStation = select.options[select.selectedIndex].innerText;
-        sessionStorage.setItem('departureStation', departureStation);
-        s_departure_station.innerText = departureStation;
-        s_departure_station.style.color = '#33cd9e';
-        s_departure_station.hidden = false;
+        let station = select.options[select.selectedIndex].innerText;
+
+        const itemName = isDeparture ? 'departureStation' : 'arrivalStation';
+        sessionStorage.setItem(itemName, station);
+        span_station.innerText = station;
+        span_station.style.color = '#33cd9e';
+        span_station.hidden = false;
     }
 
     return select;
+}
+
+function createAndSelectStation(paragraphEl, spanEl, defaultText, isDeparture) {
+    spanEl.hidden = true;
+    p_turnout_point.style.visibility = 'visible';
+
+    let select = createStationSelect(spanEl, defaultText, isDeparture);
+    paragraphEl.appendChild(select);
+
+    i_checkbox.onchange = async function() {
+        await initStations();
+
+        select.remove();
+        select = createStationSelect(spanEl, defaultText, isDeparture);
+        paragraphEl.appendChild(select);
+    }
 }

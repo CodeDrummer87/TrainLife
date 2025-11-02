@@ -1,11 +1,6 @@
 const stationUrl = 'http://localhost:8080/api/v1/stations/allocations';
 let allStations = [];
 
-let s_turnout_point = document.getElementById('s_turnout_point');
-let i_checkbox = document.getElementById('i_checkbox');
-s_turnout_point.hidden = true;
-i_checkbox.hidden = true;
-
 async function initStations() {
     try {
         allStations = await fetchStations();
@@ -14,7 +9,7 @@ async function initStations() {
     }
 }
 
-initStations();
+(() => initStations())();
 
 async function fetchStations() {
     let allocationId = 1;
@@ -40,6 +35,7 @@ setValueAndColor(s_loconumber, 'loconumber', 'номер');
 setValueAndColor(s_allocation, 'allocation', 'установить');
 setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
 setValueAndColor(s_departure_station, 'departureStation', 'станция отправления');
+setValueAndColor(s_arrival_station, 'arrivalStation', 'станция прибытия');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
