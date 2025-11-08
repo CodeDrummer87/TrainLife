@@ -93,7 +93,7 @@ s_loconumber.onclick = function() {
 
     checkAvailableInput(input);
     p_loconumber.appendChild(input);
-    
+
     input.onblur = function() {
         getNumber(input, 'loconumber', s_loconumber);
     }
@@ -149,7 +149,7 @@ s_allocation.onclick = function() {
 }
 //endregion
 
-//region Number of brakeshoes
+//region Number of Brakeshoes
 const p_brakeshoes = document.getElementById('p_brakeshoes');
 const s_brakeshoes = document.getElementById('s_brakeshoes');
 
@@ -256,9 +256,9 @@ function selectStation(paragraphEl, spanEl, defaultText, isDeparture) {
 }
 //endregion
 
-//.:: Train number
-let p_trainnumber = document.getElementById('p_trainnumber');
-let s_trainnumber = document.getElementById('s_trainnumber');
+//region Train Number
+const p_trainnumber = document.getElementById('p_trainnumber');
+const s_trainnumber = document.getElementById('s_trainnumber');
 
 s_trainnumber.onclick = function() {
     s_trainnumber.hidden = true;
@@ -281,6 +281,34 @@ s_trainnumber.onclick = function() {
         }
     }
 }
+//endregion
+
+//region Train Weight
+const p_trainweight = document.getElementById('p_trainweight');
+const s_trainweight = document.getElementById('s_trainweight');
+
+s_trainweight.onclick = function() {
+    s_trainweight.hidden = true;
+    const input = document.createElement('input');
+    input.classList.add('short-input');
+    input.value = sessionStorage.getItem('trainweight') === null || sessionStorage.getItem('trainweight') === 'номер' ?
+        '' : sessionStorage.getItem('trainweight');
+    input.placeholder = 'масса поезда';
+    input.autofocus = true;
+
+    checkAvailableInput(input);
+    p_trainweight.appendChild(input);
+
+    input.onblur = function() {
+        getNumber(input, 'trainweight', s_trainweight);
+    }
+    input.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+            getNumber(input, 'trainweight', s_trainweight);
+        }
+    }
+}
+//endregion
 
 //.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 function getNumber(input, itemName, span) {

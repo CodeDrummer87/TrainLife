@@ -37,6 +37,7 @@ setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
 setValueAndColor(s_departure_station, 'departureStation', 'станция отправления');
 setValueAndColor(s_arrival_station, 'arrivalStation', 'станция прибытия');
 setValueAndColor(s_trainnumber, 'trainnumber', 'номер');
+setValueAndColor(s_trainweight, 'trainweight', 'масса поезда');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
