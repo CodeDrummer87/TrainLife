@@ -273,11 +273,11 @@ s_train_number.onclick = function() {
     p_train_number.appendChild(input);
 
     input.onblur = function() {
-        getNumber(input, 'train_number', s_train_number);
+        getNumber(input, 'номер', 'train_number', s_train_number);
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            getNumber(input, 'train_number', s_train_number);
+            getNumber(input, 'номер', 'train_number', s_train_number);
         }
     }
 }
@@ -291,7 +291,8 @@ s_train_weight.onclick = function() {
     s_train_weight.hidden = true;
     const input = document.createElement('input');
     input.classList.add('short-input');
-    input.value = sessionStorage.getItem('train_weight') === null || sessionStorage.getItem('train_weight') === 'номер' ?
+    input.value = sessionStorage.getItem('train_weight') === null ||
+            sessionStorage.getItem('train_weight') === 'масса поезда' ?
         '' : sessionStorage.getItem('train_weight');
     input.placeholder = 'масса поезда';
     input.autofocus = true;
@@ -300,11 +301,11 @@ s_train_weight.onclick = function() {
     p_train_weight.appendChild(input);
 
     input.onblur = function() {
-        getNumber(input, 'train_weight', s_train_weight);
+        getNumber(input, 'масса поезда', 'train_weight', s_train_weight);
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            getNumber(input, 'train_weight', s_train_weight);
+            getNumber(input, 'масса поезда', 'train_weight', s_train_weight);
         }
     }
 }
@@ -328,24 +329,80 @@ s_number_of_axis.onclick = function() {
     p_number_of_axis.appendChild(input);
 
     input.onblur = function() {
-        getNumber(input, 'number_of_axis', s_number_of_axis);
+        getNumber(input, 'количество осей', 'number_of_axis', s_number_of_axis);
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            getNumber(input, 'number_of_axis', s_number_of_axis);
+            getNumber(input, 'количество осей','number_of_axis', s_number_of_axis);
+        }
+    }
+}
+//endregion
+
+//region Conditional Length
+const p_conditional_length = document.getElementById('p_conditional_length');
+const s_conditional_length = document.getElementById('s_conditional_length');
+
+s_conditional_length.onclick = function() {
+    s_conditional_length.hidden = true;
+    const input = document.createElement('input');
+    input.classList.add('short-input');
+    input.value = sessionStorage.getItem('conditional_length') === null ||
+    sessionStorage.getItem('conditional_length') === 'условная длина' ?
+        '' : sessionStorage.getItem('conditional_length');
+    input.placeholder = 'усл. длина';
+    input.autofocus = true;
+
+    checkAvailableInput(input, 2);
+    p_conditional_length.appendChild(input);
+
+    input.onblur = function() {
+        getNumber(input, 'условная длина', 'conditional_length', s_conditional_length);
+    }
+    input.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+            getNumber(input, 'условная длина', 'conditional_length', s_conditional_length);
+        }
+    }
+}
+//endregion
+
+//region A Tailcar Number
+const p_tailcar_number = document.getElementById('p_tailcar_number');
+const s_tailcar_number = document.getElementById('s_tailcar_number');
+
+s_tailcar_number.onclick = function() {
+    s_tailcar_number.hidden = true;
+    const input = document.createElement('input');
+    input.classList.add('short-input');
+    input.value = sessionStorage.getItem('tailcar_number') === null ||
+    sessionStorage.getItem('tailcar_number') === 'номер хвостового вагона' ?
+        '' : sessionStorage.getItem('tailcar_number');
+    input.placeholder = 'N вагона';
+    input.autofocus = true;
+
+    checkAvailableInput(input, 7);
+    p_tailcar_number.appendChild(input);
+
+    input.onblur = function() {
+        getNumber(input, 'номер хвостового вагона', 'tailcar_number', s_tailcar_number);
+    }
+    input.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+            getNumber(input, 'номер хвостового вагона', 'tailcar_number', s_tailcar_number);
         }
     }
 }
 //endregion
 
 //.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-function getNumber(input, itemName, span) {
-    let value = input.value.trim().length === 0 ? 'номер' : input.value.trim();
+function getNumber(input, defaultRecord, itemName, span) {
+    let value = input.value.trim().length === 0 ? defaultRecord : input.value.trim();
     value = validateLocoNumber(value);
     sessionStorage.setItem(itemName, value);
     span.innerText = value;
     input.hidden = true;
-    setValueAndColor(span, itemName, 'номер');
+    setValueAndColor(span, itemName, defaultRecord);
     span.hidden = false;
 }
 

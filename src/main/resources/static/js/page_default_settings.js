@@ -39,6 +39,8 @@ setValueAndColor(s_arrival_station, 'arrival_station', 'станция приб�
 setValueAndColor(s_train_number, 'train_number', 'номер');
 setValueAndColor(s_train_weight, 'train_weight', 'масса поезда');
 setValueAndColor(s_number_of_axis, 'number_of_axis', 'количество осей');
+setValueAndColor(s_conditional_length, 'conditional_length', 'условная длина');
+setValueAndColor(s_tailcar_number, 'tailcar_number', 'номер хвостового вагона');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
