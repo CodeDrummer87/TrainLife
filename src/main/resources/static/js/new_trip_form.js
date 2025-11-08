@@ -91,7 +91,7 @@ s_loconumber.onclick = function() {
     input.placeholder = 'номер';
     input.autofocus = true;
 
-    checkAvailableInput(input);
+    checkAvailableInput(input, 3);
     p_loconumber.appendChild(input);
 
     input.onblur = function() {
@@ -229,7 +229,7 @@ function createStationSelect(span_station, default_text, isDeparture) {
         select.hidden = true;
         let station = select.options[select.selectedIndex].innerText;
 
-        const itemName = isDeparture ? 'departureStation' : 'arrivalStation';
+        const itemName = isDeparture ? 'departure_station' : 'arrival_station';
         sessionStorage.setItem(itemName, station);
         span_station.innerText = station;
         span_station.style.color = '#33cd9e';
@@ -257,54 +257,82 @@ function selectStation(paragraphEl, spanEl, defaultText, isDeparture) {
 //endregion
 
 //region Train Number
-const p_trainnumber = document.getElementById('p_trainnumber');
-const s_trainnumber = document.getElementById('s_trainnumber');
+const p_train_number = document.getElementById('p_train_number');
+const s_train_number = document.getElementById('s_train_number');
 
-s_trainnumber.onclick = function() {
-    s_trainnumber.hidden = true;
+s_train_number.onclick = function() {
+    s_train_number.hidden = true;
     const input = document.createElement('input');
     input.classList.add('short-input');
-    input.value = sessionStorage.getItem('trainnumber') === null || sessionStorage.getItem('trainnumber') === 'номер' ?
-        '' : sessionStorage.getItem('trainnumber');
+    input.value = sessionStorage.getItem('train_number') === null || sessionStorage.getItem('train_number') === 'номер' ?
+        '' : sessionStorage.getItem('train_number');
     input.placeholder = 'номер';
     input.autofocus = true;
 
-    checkAvailableInput(input);
-    p_trainnumber.appendChild(input);
+    checkAvailableInput(input, 3);
+    p_train_number.appendChild(input);
 
     input.onblur = function() {
-        getNumber(input, 'trainnumber', s_trainnumber);
+        getNumber(input, 'train_number', s_train_number);
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            getNumber(input, 'trainnumber', s_trainnumber);
+            getNumber(input, 'train_number', s_train_number);
         }
     }
 }
 //endregion
 
 //region Train Weight
-const p_trainweight = document.getElementById('p_trainweight');
-const s_trainweight = document.getElementById('s_trainweight');
+const p_train_weight = document.getElementById('p_train_weight');
+const s_train_weight = document.getElementById('s_train_weight');
 
-s_trainweight.onclick = function() {
-    s_trainweight.hidden = true;
+s_train_weight.onclick = function() {
+    s_train_weight.hidden = true;
     const input = document.createElement('input');
     input.classList.add('short-input');
-    input.value = sessionStorage.getItem('trainweight') === null || sessionStorage.getItem('trainweight') === 'номер' ?
-        '' : sessionStorage.getItem('trainweight');
+    input.value = sessionStorage.getItem('train_weight') === null || sessionStorage.getItem('train_weight') === 'номер' ?
+        '' : sessionStorage.getItem('train_weight');
     input.placeholder = 'масса поезда';
     input.autofocus = true;
 
-    checkAvailableInput(input);
-    p_trainweight.appendChild(input);
+    checkAvailableInput(input, 3);
+    p_train_weight.appendChild(input);
 
     input.onblur = function() {
-        getNumber(input, 'trainweight', s_trainweight);
+        getNumber(input, 'train_weight', s_train_weight);
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            getNumber(input, 'trainweight', s_trainweight);
+            getNumber(input, 'train_weight', s_train_weight);
+        }
+    }
+}
+//endregion
+
+//region Number of Axis
+const p_number_of_axis = document.getElementById('p_number_of_axis');
+const s_number_of_axis = document.getElementById('s_number_of_axis');
+
+s_number_of_axis.onclick = function() {
+    s_number_of_axis.hidden = true;
+    const input = document.createElement('input');
+    input.classList.add('short-input');
+    input.value = sessionStorage.getItem('number_of_axis') === null ||
+                    sessionStorage.getItem('number_of_axis') === 'количество осей' ?
+        '' : sessionStorage.getItem('number_of_axis');
+    input.placeholder = 'кол-во осей';
+    input.autofocus = true;
+
+    checkAvailableInput(input, 2);
+    p_number_of_axis.appendChild(input);
+
+    input.onblur = function() {
+        getNumber(input, 'number_of_axis', s_number_of_axis);
+    }
+    input.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+            getNumber(input, 'number_of_axis', s_number_of_axis);
         }
     }
 }
@@ -321,10 +349,10 @@ function getNumber(input, itemName, span) {
     span.hidden = false;
 }
 
-function checkAvailableInput(input) {
+function checkAvailableInput(input, digits) {
     input.addEventListener('keydown', function(event) {
         const allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'];
-        if (!allowedInput.includes(event.key) || input.value.length > 3) {
+        if (!allowedInput.includes(event.key) || input.value.length > digits) {
             if (event.key !== 'Backspace')
                 event.preventDefault();
         }
