@@ -34,10 +34,11 @@ setValueAndColor(s_series, 'series', 'серия');
 setValueAndColor(s_loconumber, 'loconumber', 'номер');
 setValueAndColor(s_allocation, 'allocation', 'установить');
 setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
-setValueAndColor(s_departure_station, 'departureStation', 'станция отправления');
-setValueAndColor(s_arrival_station, 'arrivalStation', 'станция прибытия');
-setValueAndColor(s_trainnumber, 'trainnumber', 'номер');
-setValueAndColor(s_trainweight, 'trainweight', 'масса поезда');
+setValueAndColor(s_departure_station, 'departure_station', 'станция отправления');
+setValueAndColor(s_arrival_station, 'arrival_station', 'станция прибытия');
+setValueAndColor(s_train_number, 'train_number', 'номер');
+setValueAndColor(s_train_weight, 'train_weight', 'масса поезда');
+setValueAndColor(s_number_of_axis, 'number_of_axis', 'количество осей');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
