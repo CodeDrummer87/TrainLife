@@ -174,8 +174,12 @@ input[type="datetime-local"], select, input {
     border-radius: 4px;
     cursor:pointer;
     background-color: burlywood;
-    padding: 0;
+    padding: 0 0 0 2px;
     margin: 0;
+}
+
+.short-input {
+    width: 80px;
 }
 
 #p_series>select,

@@ -1,4 +1,4 @@
-//.:: Явка
+//region Attendance
 const p_attendance = document.getElementById('p_attendance');
 const s_attendance = document.getElementById('s_attendance');
 
@@ -49,8 +49,9 @@ function convertToParagraph(input_time) {
     s_attendance.hidden = false;
     s_attendance.style.color = '#33cd9e';
 }
+//endregion
 
-//.:: Серия
+//region Series
 const p_series = document.getElementById('p_series');
 const s_series = document.getElementById('s_series');
 
@@ -76,8 +77,9 @@ s_series.onclick = function() {
 
     p_series.appendChild(select);
 }
+//endregion
 
-//.:: Номер
+//region Locomotive Number
 const p_loconumber = document.getElementById('p_loconumber');
 const s_loconumber = document.getElementById('s_loconumber');
 
@@ -89,35 +91,17 @@ s_loconumber.onclick = function() {
     input.placeholder = 'номер';
     input.autofocus = true;
 
-    input.addEventListener('keydown', function(event) {
-        const allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'];
-        if (!allowedInput.includes(event.key) || input.value.length > 3) {
-            if (event.key !== 'Backspace')
-                event.preventDefault();
-        }
-    });
-
+    checkAvailableInput(input);
     p_loconumber.appendChild(input);
-
-
+    
     input.onblur = function() {
-        getLocoNumber(input);
+        getNumber(input, 'loconumber', s_loconumber);
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            getLocoNumber(input);
+            getNumber(input, 'loconumber', s_loconumber);
         }
     }
-}
-
-function getLocoNumber(input) {
-    let value = input.value.trim().length === 0 ? 'номер' : input.value.trim();
-    value = validateLocoNumber(value);
-    sessionStorage.setItem('loconumber', value);
-    s_loconumber.innerText = value;
-    input.hidden = true;
-    setValueAndColor(s_loconumber, 'loconumber', 'номер');
-    s_loconumber.hidden = false;
 }
 
 function validateLocoNumber(value) {
@@ -127,8 +111,9 @@ function validateLocoNumber(value) {
     return value.length === 1 ? '00' + value :
         value.length === 2 ? '0' + value : value;
 }
+//endregion
 
-//.:: Депо приписки
+//region Allocation
 const p_allocation = document.getElementById('p_allocation');
 const s_allocation = document.getElementById('s_allocation');
 
@@ -162,8 +147,9 @@ s_allocation.onclick = function() {
         s_allocation.hidden = false;
     }
 }
+//endregion
 
-//.:: Количество тормозных башмаков
+//region Number of brakeshoes
 const p_brakeshoes = document.getElementById('p_brakeshoes');
 const s_brakeshoes = document.getElementById('s_brakeshoes');
 
@@ -203,8 +189,9 @@ function getNumberOfBrakeShoes(input) {
     setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
     s_brakeshoes.hidden = false;
 }
+//endregion
 
-//.:: Станции отправления и прибытия
+//region Departure and Arrival stations
 const p_departure_station = document.getElementById('p_departure_station');
 const s_departure_station = document.getElementById('s_departure_station');
 const p_arrival_station = document.getElementById('p_arrival_station');
@@ -213,10 +200,10 @@ const p_turnout_point = document.getElementById('p_turnout_point');
 const i_checkbox = document.getElementById('i_checkbox');
 
 s_departure_station.onclick = function() {
-    createAndSelectStation(p_departure_station, s_departure_station, 'станция отправления', true);
+    selectStation(p_departure_station, s_departure_station, 'станция отправления', true);
 }
 s_arrival_station.onclick = function() {
-    createAndSelectStation(p_arrival_station, s_arrival_station, 'станция прибытия', false);
+    selectStation(p_arrival_station, s_arrival_station, 'станция прибытия', false);
 }
 
 function createStationSelect(span_station, default_text, isDeparture) {
@@ -252,7 +239,7 @@ function createStationSelect(span_station, default_text, isDeparture) {
     return select;
 }
 
-function createAndSelectStation(paragraphEl, spanEl, defaultText, isDeparture) {
+function selectStation(paragraphEl, spanEl, defaultText, isDeparture) {
     spanEl.hidden = true;
     p_turnout_point.style.visibility = 'visible';
 
@@ -266,4 +253,52 @@ function createAndSelectStation(paragraphEl, spanEl, defaultText, isDeparture) {
         select = createStationSelect(spanEl, defaultText, isDeparture);
         paragraphEl.appendChild(select);
     }
+}
+//endregion
+
+//.:: Train number
+let p_trainnumber = document.getElementById('p_trainnumber');
+let s_trainnumber = document.getElementById('s_trainnumber');
+
+s_trainnumber.onclick = function() {
+    s_trainnumber.hidden = true;
+    const input = document.createElement('input');
+    input.classList.add('short-input');
+    input.value = sessionStorage.getItem('trainnumber') === null || sessionStorage.getItem('trainnumber') === 'номер' ?
+        '' : sessionStorage.getItem('trainnumber');
+    input.placeholder = 'номер';
+    input.autofocus = true;
+
+    checkAvailableInput(input);
+    p_trainnumber.appendChild(input);
+
+    input.onblur = function() {
+        getNumber(input, 'trainnumber', s_trainnumber);
+    }
+    input.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+            getNumber(input, 'trainnumber', s_trainnumber);
+        }
+    }
+}
+
+//.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+function getNumber(input, itemName, span) {
+    let value = input.value.trim().length === 0 ? 'номер' : input.value.trim();
+    value = validateLocoNumber(value);
+    sessionStorage.setItem(itemName, value);
+    span.innerText = value;
+    input.hidden = true;
+    setValueAndColor(span, itemName, 'номер');
+    span.hidden = false;
+}
+
+function checkAvailableInput(input) {
+    input.addEventListener('keydown', function(event) {
+        const allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'];
+        if (!allowedInput.includes(event.key) || input.value.length > 3) {
+            if (event.key !== 'Backspace')
+                event.preventDefault();
+        }
+    });
 }
