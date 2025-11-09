@@ -95,11 +95,11 @@ s_loconumber.onclick = function() {
     p_loconumber.appendChild(input);
 
     input.onblur = function() {
-        getNumber(input, 'loconumber', s_loconumber);
+        getNumber(input, 'номер', 'loconumber', s_loconumber);
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            getNumber(input, 'loconumber', s_loconumber);
+            getNumber(input, 'номер', 'loconumber', s_loconumber);
         }
     }
 }

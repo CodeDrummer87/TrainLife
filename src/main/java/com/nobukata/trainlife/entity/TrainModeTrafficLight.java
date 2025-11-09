@@ -11,16 +11,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "stations")
-public class Station {
+@Table(name = "train_mode_traffic_lights")
+public class TrainModeTrafficLight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "is_even_direction")
+    private Boolean isEvenDirection;
     private String title;
-    @Column(name = "railway_id")
-    private Integer railwayId;
-    private String code;
-    @Column(name = "has_turnout_point")
-    private Boolean hasTurnoutPoint;
+    @Column(name = "station_id")
+    private Integer stationId;
 }
