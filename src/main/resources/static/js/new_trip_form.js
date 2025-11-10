@@ -199,6 +199,11 @@ const s_arrival_station = document.getElementById('s_arrival_station');
 const p_turnout_point = document.getElementById('p_turnout_point');
 const i_checkbox = document.getElementById('i_checkbox');
 
+const p_departure_traffic_light = document.getElementById('p_departure_traffic_light');
+const s_departure_traffic_light = document.getElementById('s_departure_traffic_light');
+const p_arrival_traffic_light = document.getElementById('p_arrival_traffic_light');
+const s_arrival_traffic_light = document.getElementById('s_arrival_traffic_light');
+
 s_departure_station.onclick = function() {
     selectStation(p_departure_station, s_departure_station, 'станция отправления', true);
 }
@@ -234,6 +239,7 @@ function createStationSelect(span_station, default_text, isDeparture) {
         span_station.innerText = station;
         span_station.style.color = '#33cd9e';
         span_station.hidden = false;
+        activateTrafficLightElement();
     }
 
     return select;
@@ -274,10 +280,12 @@ s_train_number.onclick = function() {
 
     input.onblur = function() {
         getNumber(input, 'номер', 'train_number', s_train_number);
+        activateTrafficLightElement();
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
             getNumber(input, 'номер', 'train_number', s_train_number);
+            activateTrafficLightElement();
         }
     }
 }
@@ -414,4 +422,21 @@ function checkAvailableInput(input, digits) {
                 event.preventDefault();
         }
     });
+}
+
+function activateTrafficLightElement() {
+    if (s_train_number.innerText !== 'номер') {
+        removeClass(s_departure_station, p_departure_traffic_light, 'станция отправления');
+        removeClass(s_arrival_station, p_arrival_traffic_light, 'станция прибытия');
+    }
+    else {
+        p_departure_traffic_light.classList.add('inactive');
+        p_arrival_traffic_light.classList.add('inactive');
+    }
+}
+
+function removeClass(span, element, defaultRecord) {
+    if (span.innerText !== defaultRecord) {
+        element.classList.remove('inactive');
+    }
 }
