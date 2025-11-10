@@ -1,5 +1,7 @@
 const stationUrl = 'http://localhost:8080/api/v1/stations/allocations';
 let allStations = [];
+const trafficLightUrl = 'http://localhost:8080/api/v1/traffic-lights';
+let trafficLightList = [];
 
 async function initStations() {
     try {
