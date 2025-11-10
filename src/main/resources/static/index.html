@@ -44,15 +44,15 @@
                             <input id="i_checkbox" type="checkbox" checked>
                         </p>
                         <div id="div_stations">
-                            <p id="p_departure_station"><span id="s_departure_station">станция отправления</span></p>
+                            <p id="p_departure_station"><span id="s_departure_station"  data-id="0">станция отправления</span></p>
                             <p>&nbsp;-&nbsp;</p>
-                            <p id="p_arrival_station"><span id="s_arrival_station">станция прибытия</span></p>
+                            <p id="p_arrival_station"><span id="s_arrival_station" data-id="0">станция прибытия</span></p>
                         </div>
                         <div id="all_train_data">
                             <div id="departure">
                                 <h4><u>отправление:</u></h4>
                                 <p><span>время</span></p>
-                                <p>(<span>светофор</span>)</p>
+                                <p class="inactive" id="p_departure_traffic_light">(<span id="s_departure_traffic_light">светофор</span>)</p>
                             </div>
                             <div id="train_data">
                                 <p id="p_train_number">№ поезда: <span id="s_train_number">номер</span></p>
@@ -65,7 +65,7 @@
                             <div id="arrival">
                                 <h4><u>прибытие:</u></h4>
                                 <p><span>время</span></p>
-                                <p>(<span>светофор</span>)</p>
+                                <p class="inactive" id="p_arrival_traffic_light">(<span id="s_arrival_traffic_light">светофор</span>)</p>
                             </div>
                         </div>
                         <div id="div_brake_test">

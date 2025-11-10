@@ -133,3 +133,13 @@ span:hover {
     box-shadow: 0 0 2px 2px rgb(209, 168, 86, 0.2);
     border-radius: 4px;
 }
+
+.inactive {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: not-allowed;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}

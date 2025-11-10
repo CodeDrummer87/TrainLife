@@ -1,5 +1,7 @@
 const stationUrl = 'http://localhost:8080/api/v1/stations/allocations';
 let allStations = [];
+const trafficLightUrl = 'http://localhost:8080/api/v1/traffic-lights';
+let trafficLightList = [];
 
 async function initStations() {
     try {
@@ -37,6 +39,8 @@ setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
 setValueAndColor(s_departure_station, 'departure_station', 'станция отправления');
 setValueAndColor(s_arrival_station, 'arrival_station', 'станция прибытия');
 setValueAndColor(s_train_number, 'train_number', 'номер');
+checkValueStation(s_departure_station, s_train_number, p_departure_traffic_light, 'станция отправления', 'номер');
+checkValueStation(s_arrival_station, s_train_number, p_arrival_traffic_light, 'станция прибытия', 'номер');
 setValueAndColor(s_train_weight, 'train_weight', 'масса поезда');
 setValueAndColor(s_number_of_axis, 'number_of_axis', 'количество осей');
 setValueAndColor(s_conditional_length, 'conditional_length', 'условная длина');
@@ -47,4 +51,10 @@ function setValueAndColor(element, item, value) {
         value : sessionStorage.getItem(item);
 
     element.style.color = element.innerText === value ? 'darkkhaki' : '#33cd9e';
+}
+
+function checkValueStation(stationElement, trainElement, trafficLightElement, defaultStation, defaultTrainNumber) {
+    if ((defaultStation !== stationElement.innerText) && (defaultTrainNumber !== trainElement.innerText)) {
+        trafficLightElement.classList.toggle('inactive');
+    }
 }

@@ -1,4 +1,4 @@
-//region Attendance
+//region .:: Attendance
 const p_attendance = document.getElementById('p_attendance');
 const s_attendance = document.getElementById('s_attendance');
 
@@ -51,7 +51,7 @@ function convertToParagraph(input_time) {
 }
 //endregion
 
-//region Series
+//region .:: Series
 const p_series = document.getElementById('p_series');
 const s_series = document.getElementById('s_series');
 
@@ -79,7 +79,7 @@ s_series.onclick = function() {
 }
 //endregion
 
-//region Locomotive Number
+//region .:: Locomotive Number
 const p_loconumber = document.getElementById('p_loconumber');
 const s_loconumber = document.getElementById('s_loconumber');
 
@@ -95,11 +95,11 @@ s_loconumber.onclick = function() {
     p_loconumber.appendChild(input);
 
     input.onblur = function() {
-        getNumber(input, 'loconumber', s_loconumber);
+        getNumber(input, 'номер', 'loconumber', s_loconumber);
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
-            getNumber(input, 'loconumber', s_loconumber);
+            getNumber(input, 'номер', 'loconumber', s_loconumber);
         }
     }
 }
@@ -113,7 +113,7 @@ function validateLocoNumber(value) {
 }
 //endregion
 
-//region Allocation
+//region .:: Allocation
 const p_allocation = document.getElementById('p_allocation');
 const s_allocation = document.getElementById('s_allocation');
 
@@ -149,7 +149,7 @@ s_allocation.onclick = function() {
 }
 //endregion
 
-//region Number of Brakeshoes
+//region .:: Number of Brakeshoes
 const p_brakeshoes = document.getElementById('p_brakeshoes');
 const s_brakeshoes = document.getElementById('s_brakeshoes');
 
@@ -191,13 +191,18 @@ function getNumberOfBrakeShoes(input) {
 }
 //endregion
 
-//region Departure and Arrival stations
+//region .:: Departure and Arrival stations
 const p_departure_station = document.getElementById('p_departure_station');
 const s_departure_station = document.getElementById('s_departure_station');
 const p_arrival_station = document.getElementById('p_arrival_station');
 const s_arrival_station = document.getElementById('s_arrival_station');
 const p_turnout_point = document.getElementById('p_turnout_point');
 const i_checkbox = document.getElementById('i_checkbox');
+
+const p_departure_traffic_light = document.getElementById('p_departure_traffic_light');
+const s_departure_traffic_light = document.getElementById('s_departure_traffic_light');
+const p_arrival_traffic_light = document.getElementById('p_arrival_traffic_light');
+const s_arrival_traffic_light = document.getElementById('s_arrival_traffic_light');
 
 s_departure_station.onclick = function() {
     selectStation(p_departure_station, s_departure_station, 'станция отправления', true);
@@ -228,12 +233,14 @@ function createStationSelect(span_station, default_text, isDeparture) {
         p_turnout_point.style.visibility = 'hidden';
         select.hidden = true;
         let station = select.options[select.selectedIndex].innerText;
+        span_station.dataset.id = select.value;
 
         const itemName = isDeparture ? 'departure_station' : 'arrival_station';
         sessionStorage.setItem(itemName, station);
         span_station.innerText = station;
         span_station.style.color = '#33cd9e';
         span_station.hidden = false;
+        activateTrafficLightElement();
     }
 
     return select;
@@ -256,7 +263,7 @@ function selectStation(paragraphEl, spanEl, defaultText, isDeparture) {
 }
 //endregion
 
-//region Train Number
+//region .:: Train Number
 const p_train_number = document.getElementById('p_train_number');
 const s_train_number = document.getElementById('s_train_number');
 
@@ -274,16 +281,18 @@ s_train_number.onclick = function() {
 
     input.onblur = function() {
         getNumber(input, 'номер', 'train_number', s_train_number);
+        activateTrafficLightElement();
     }
     input.onkeydown = function(e) {
         if (e.key === 'Enter') {
             getNumber(input, 'номер', 'train_number', s_train_number);
+            activateTrafficLightElement();
         }
     }
 }
 //endregion
 
-//region Train Weight
+//region .:: Train Weight
 const p_train_weight = document.getElementById('p_train_weight');
 const s_train_weight = document.getElementById('s_train_weight');
 
@@ -311,7 +320,7 @@ s_train_weight.onclick = function() {
 }
 //endregion
 
-//region Number of Axis
+//region .:: Number of Axis
 const p_number_of_axis = document.getElementById('p_number_of_axis');
 const s_number_of_axis = document.getElementById('s_number_of_axis');
 
@@ -339,7 +348,7 @@ s_number_of_axis.onclick = function() {
 }
 //endregion
 
-//region Conditional Length
+//region .:: Conditional Length
 const p_conditional_length = document.getElementById('p_conditional_length');
 const s_conditional_length = document.getElementById('s_conditional_length');
 
@@ -367,7 +376,7 @@ s_conditional_length.onclick = function() {
 }
 //endregion
 
-//region A Tailcar Number
+//region .:: A Tailcar Number
 const p_tailcar_number = document.getElementById('p_tailcar_number');
 const s_tailcar_number = document.getElementById('s_tailcar_number');
 
@@ -415,3 +424,55 @@ function checkAvailableInput(input, digits) {
         }
     });
 }
+
+function activateTrafficLightElement() {
+    if (s_train_number.innerText !== 'номер') {
+        activateAndFetchTrafficLights(s_departure_station, p_departure_traffic_light, 'станция отправления');
+        activateAndFetchTrafficLights(s_arrival_station, p_arrival_traffic_light, 'станция прибытия');
+    }
+    else {
+        p_departure_traffic_light.classList.add('inactive');
+        p_arrival_traffic_light.classList.add('inactive');
+    }
+    console.log(trafficLightList);
+}
+
+function activateAndFetchTrafficLights(span, element, defaultRecord) {
+    if (span.innerText !== defaultRecord) {
+        element.classList.remove('inactive');
+
+        const stationId = span.dataset.id;
+        const isEven = parseInt(s_train_number.innerText) % 2 === 0;
+
+        trafficLightList = getTrafficLightList(stationId, isEven)
+            .then(t => console.log(t))
+            .catch(error => console.error('Ошибка: ' + error));
+    }
+}
+
+//region .:: Fetch Entities
+async function fetchTrafficLights(stationId, isEven) {
+    try {
+        const uri = `/station/${stationId}?isEven=${isEven}`;
+        const response = await fetch(trafficLightUrl + uri);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch(error) {
+        console.error("Ошибка выполнения запроса на извлечение светофоров: " + error);
+        return [];
+    }
+}
+
+async function getTrafficLightList(stationId, isEven) {
+    try {
+        return await fetchTrafficLights(stationId, isEven);
+    } catch(error) {
+        console.error('Ошибка загрузки светофоров по ID станции: ' + error);
+        return [];
+    }
+}
+//endregion
