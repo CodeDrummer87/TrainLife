@@ -178,7 +178,7 @@ input[type="datetime-local"], select, input {
     margin: 0;
 }
 
-.short-input {
+.short-field {
     width: 90px;
 }
 
