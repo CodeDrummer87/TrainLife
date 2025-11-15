@@ -33,7 +33,6 @@ async function fetchStations() {
 }
 
 async function fetchTrafficLights(span_station, defaultRecord) {
-    console.log(`Для ${defaultRecord}: span_station = ${span_station.innerText} | s_train_number = ${s_train_number.innerText}`);
     if (span_station.innerText !== defaultRecord && s_train_number.innerText !== 'номер') {
         const stationId = span_station.dataset.id;
         const isEven = parseInt(s_train_number.innerText) % 2 === 0;
@@ -90,6 +89,8 @@ function checkValueStation(stationElement, trainElement, trafficLightElement, de
 }
 
 function checkTrafficLightList() {
+    s_departure_station.dataset.id = sessionStorage.getItem('departure_station_id');
+    s_arrival_station.dataset.id = sessionStorage.getItem('arrival_station_id');
     departureTrafficLightList = JSON.parse(sessionStorage.getItem('departure_traffic_light_list'));
     arrivalTrafficLightList = JSON.parse(sessionStorage.getItem('arrival_traffic_light_list'));
 }

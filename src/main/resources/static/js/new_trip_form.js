@@ -266,7 +266,10 @@ function createStationSelect(span_station, default_text, isDeparture) {
         p_turnout_point.style.visibility = 'hidden';
         select.hidden = true;
         let station = select.options[select.selectedIndex].innerText;
-        span_station.dataset.id = select.value;
+        const stationId = select.value;
+        span_station.dataset.id = stationId;
+        const item = isDeparture ? 'departure_station_id' : 'arrival_station_id';
+        sessionStorage.setItem(item, stationId);
 
         const itemName = isDeparture ? 'departure_station' : 'arrival_station';
         sessionStorage.setItem(itemName, station);
@@ -275,8 +278,12 @@ function createStationSelect(span_station, default_text, isDeparture) {
         span_station.hidden = false;
         activateTrafficLightElement();
 
-        departureTrafficLightList = await fetchTrafficLights(s_departure_station, 'станция отправления');
-        arrivalTrafficLightList = await fetchTrafficLights(s_arrival_station, 'станция прибытия');
+        const list = isDeparture ?
+            await fetchTrafficLights(s_departure_station,'станция отправления') :
+            await fetchTrafficLights(s_arrival_station, 'станция прибытия');
+        if (isDeparture) {
+            departureTrafficLightList = list;
+        } else arrivalTrafficLightList = list;
     }
 
     select.onblur = function() {
