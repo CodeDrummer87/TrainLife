@@ -1,8 +1,33 @@
-const stationUrl = 'http://localhost:8080/api/v1/stations/allocations';
+const url = 'http://localhost:8080/api/v1';
+
+let locomotiveSeries = [];
 let allStations = [];
-const trafficLightUrl = 'http://localhost:8080/api/v1/traffic-lights';
 let departureTrafficLightList = [];
 let arrivalTrafficLightList = [];
+
+async function fetchLocomotiveSeries() {
+    try {
+        const response = await fetch(url + '/locomotive-series/list');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const locomotiveSeries = await response.json();
+        return Array.isArray(locomotiveSeries) ? locomotiveSeries : [];
+    } catch(error) {
+        console.error("Ошибка выполнения запроса на извлечение серий локомотивов: " + error);
+        return [];
+    }
+}
+
+async function initLocomotiveSeries() {
+    try {
+        locomotiveSeries = await fetchLocomotiveSeries();
+    } catch(error) {
+        console.error('Ошибка при инициализации серий локомотивов: ' + error);
+    }
+}
 
 async function initStations() {
     try {
@@ -12,13 +37,14 @@ async function initStations() {
     }
 }
 
+(() => initLocomotiveSeries())();
 (() => initStations())();
 
 async function fetchStations() {
     let allocationId = 1;
     try {
         const uri = i_checkbox.checked ? `/${allocationId}/base-station-list` : `/${allocationId}/station-list`;
-        const response = await fetch(stationUrl + uri);
+        const response = await fetch(url + '/stations/allocations' + uri);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -38,7 +64,7 @@ async function fetchTrafficLights(span_station, defaultRecord) {
         const isEven = parseInt(s_train_number.innerText) % 2 === 0;
         try {
             const uri = `/station/${stationId}?isEven=${isEven}`;
-            const response = await fetch(trafficLightUrl + uri);
+            const response = await fetch(url + '/traffic-lights' + uri);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

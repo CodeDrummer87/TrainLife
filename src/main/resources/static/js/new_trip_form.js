@@ -66,11 +66,10 @@ s_series.onclick = function() {
     defaultOption.selected = true;
     select.appendChild(defaultOption);
 
-    const series = [ 'ВЛ10', 'ВЛ10у', '2ЭС6', '2ЭС10' ];
-    for (let i = 0; i < series.length; i++) {
-        let option = document.createElement('option');
-        option.value = (i + 1).toString();
-        option.innerText = series[i];
+    for (series of locomotiveSeries) {
+        const option = document.createElement('option');
+        option.value = series.id;
+        option.innerText = series.title;
         select.appendChild(option);
     }
 
