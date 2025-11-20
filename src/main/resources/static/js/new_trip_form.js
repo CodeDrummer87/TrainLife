@@ -231,6 +231,7 @@ const p_arrival_station = document.getElementById('p_arrival_station');
 const s_arrival_station = document.getElementById('s_arrival_station');
 const p_turnout_point = document.getElementById('p_turnout_point');
 const i_checkbox = document.getElementById('i_checkbox');
+let unfocusedElement = { select: null, span: null }
 
 const p_departure_traffic_light = document.getElementById('p_departure_traffic_light');
 const s_departure_traffic_light = document.getElementById('s_departure_traffic_light');
@@ -287,14 +288,23 @@ function createStationSelect(span_station, default_text, isDeparture) {
     }
 
     select.onblur = function() {
-        if (select.value === '0') {
-            p_turnout_point.style.visibility = 'hidden';
-            select.hidden = true;
-            span_station.hidden = false;
-        }
+        setTimeout(() => {
+            if (document.activeElement.id !== i_checkbox.id) {
+                if (select.value === '0') {
+                    p_turnout_point.style.visibility = 'hidden';
+                    displaySpan(select, span_station);
+                }
+            }
+        }, 0);
     }
 
     return select;
+}
+
+function displaySpan(select, span) {
+    select.remove();
+    span.hidden = false;
+    hideCheckbox();
 }
 
 function selectStation(paragraphEl, spanEl, defaultText, isDeparture) {
@@ -311,6 +321,20 @@ function selectStation(paragraphEl, spanEl, defaultText, isDeparture) {
         select.remove();
         select = createStationSelect(spanEl, defaultText, isDeparture);
         paragraphEl.appendChild(select);
+        unfocusedElement = { select: select, span: spanEl };
+    }
+
+    i_checkbox.onblur = function() {
+        if (unfocusedElement.select !== null) {
+            displaySpan(unfocusedElement.select, unfocusedElement.span);
+            unfocusedElement.select = null;
+        }
+    }
+}
+
+function hideCheckbox() {
+    if (p_turnout_point.style.visibility === 'visible') {
+        p_turnout_point.style.visibility = 'hidden';
     }
 }
 //endregion
@@ -326,6 +350,7 @@ s_train_number.onclick = function() {
     input.value = sessionStorage.getItem('train_number') === null || sessionStorage.getItem('train_number') === 'номер' ?
         '' : sessionStorage.getItem('train_number');
     input.placeholder = 'номер';
+    input.focus();
     input.autofocus = true;
 
     input.onblur = async function() {
@@ -469,8 +494,8 @@ s_tailcar_number.onclick = function() {
 
 //region .:: A Departure Traffic Light
 s_departure_traffic_light.onclick = function() {
-    s_departure_traffic_light.hidden = true;
 
+    s_departure_traffic_light.hidden = true;
     const select = document.createElement('select');
     select.classList.add('short-field');
     const defaultOption = document.createElement('option');
@@ -487,7 +512,7 @@ s_departure_traffic_light.onclick = function() {
         select.appendChild(option);
     }
 
-    select.onchange = function() {
+    select.onchange = function () {
         select.hidden = true;
         let traffic_light = select.options[select.selectedIndex].innerText;
 
@@ -497,7 +522,7 @@ s_departure_traffic_light.onclick = function() {
         s_departure_traffic_light.hidden = false;
     }
 
-    select.onblur = function() {
+    select.onblur = function () {
         if (select.value === '0') {
             select.hidden = true;
             s_departure_traffic_light.hidden = false;
