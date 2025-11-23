@@ -1,6 +1,7 @@
 const url = 'http://localhost:8080/api/v1';
 
 let locomotiveSeries = [];
+let depots = [];
 let allStations = [];
 let departureTrafficLightList = [];
 let arrivalTrafficLightList = [];
@@ -21,11 +22,35 @@ async function fetchLocomotiveSeries() {
     }
 }
 
+async function fetchLocomotiveDepots() {
+    try {
+        const response = await fetch(url + '/locomotive-depots/list');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const depots = await response.json();
+        return Array.isArray(depots) ? depots : [];
+    } catch(error) {
+        console.error("Ошибка выполнения запроса на извлечение списка локомотивных депо: " + error);
+        return [];
+    }
+}
+
 async function initLocomotiveSeries() {
     try {
         locomotiveSeries = await fetchLocomotiveSeries();
     } catch(error) {
         console.error('Ошибка при инициализации серий локомотивов: ' + error);
+    }
+}
+
+async function initLocomotiveDepots() {
+    try {
+        depots = await fetchLocomotiveDepots();
+    } catch(error) {
+        console.error('Ошибка при инициализации локомотивных депо: ' + error);
     }
 }
 
@@ -38,6 +63,7 @@ async function initStations() {
 }
 
 (() => initLocomotiveSeries())();
+(() => initLocomotiveDepots())();
 (() => initStations())();
 
 async function fetchStations() {
@@ -86,7 +112,7 @@ async function fetchTrafficLights(span_station, defaultRecord) {
 setValueAndColor(s_attendance, 'attendance_date', 'установить');
 setValueAndColor(s_series, 'series', 'серия');
 setValueAndColor(s_loconumber, 'loconumber', 'номер');
-setValueAndColor(s_allocation, 'allocation', 'установить');
+setValueAndColor(s_home_depot, 'home_depot', 'установить');
 setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
 setValueAndColor(s_departure_station, 'departure_station', 'станция отправления');
 setValueAndColor(s_arrival_station, 'arrival_station', 'станция прибытия');

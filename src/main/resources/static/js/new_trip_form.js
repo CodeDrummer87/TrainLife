@@ -129,12 +129,12 @@ function validateLocoNumber(value) {
 }
 //endregion
 
-//region .:: Allocation
-const p_allocation = document.getElementById('p_allocation');
-const s_allocation = document.getElementById('s_allocation');
+//region .:: Home depot
+const p_home_depot = document.getElementById('p_home_depot');
+const s_home_depot = document.getElementById('s_home_depot');
 
-s_allocation.onclick = function() {
-    s_allocation.hidden = true;
+s_home_depot.onclick = function() {
+    s_home_depot.hidden = true;
 
     const select = document.createElement('select');
     const defaultOption = document.createElement('option');
@@ -144,38 +144,30 @@ s_allocation.onclick = function() {
     defaultOption.selected = true;
     select.appendChild(defaultOption);
 
-    const allocations = [
-        'Омск',
-        'Свердловск-сорт.',
-        'Курган',
-        'Петропавловск',
-        'Белово',
-        'Тайга'
-    ];
-    for (let i = 0; i < allocations.length; i++) {
-        let option = document.createElement('option');
-        option.value =  (i + 1).toString();
-        option.innerText = allocations[i];
+    for (depot of depots) {
+        const option = document.createElement('option');
+        option.value = '1';
+        option.innerText = `${depot.depotAbbreviation}, ${depot.railwayAbbreviation}`
         select.appendChild(option);
     }
 
     select.onchange = function() {
         select.hidden = true;
-        let allocation = select.options[select.selectedIndex].innerText;
-        sessionStorage.setItem('allocation', allocation);
-        s_allocation.innerText = allocation;
-        s_allocation.style.color = '#33cd9e';
-        s_allocation.hidden = false;
+        let home_depot = select.options[select.selectedIndex].innerText;
+        sessionStorage.setItem('home_depot', home_depot);
+        s_home_depot.innerText = home_depot;
+        s_home_depot.style.color = '#33cd9e';
+        s_home_depot.hidden = false;
     }
 
     select.onblur = function() {
         if (select.value === '0') {
             select.hidden = true;
-            s_allocation.hidden = false;
+            s_home_depot.hidden = false;
         }
     }
 
-    p_allocation.appendChild(select);
+    p_home_depot.appendChild(select);
     select.focus();
 }
 //endregion
