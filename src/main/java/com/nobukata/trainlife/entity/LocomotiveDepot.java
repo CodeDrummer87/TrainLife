@@ -17,9 +17,11 @@ public class LocomotiveDepot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @ManyToOne
     @JoinColumn(name = "railway_id")
     private Railway railwayId;
+
     @Column(name = "short_title")
     private String shortTitle;
     @Column(name = "full_title")
