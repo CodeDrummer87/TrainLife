@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class DepotListDto {
 
-    private final String depotAbbreviation;
+    private final Integer id;
+    private final String abbreviation;
     private final String railwayAbbreviation;
 }

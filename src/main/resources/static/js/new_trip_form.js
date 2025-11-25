@@ -129,7 +129,7 @@ function validateLocoNumber(value) {
 }
 //endregion
 
-//region .:: Home depot
+//region .:: A Home Depot
 const p_home_depot = document.getElementById('p_home_depot');
 const s_home_depot = document.getElementById('s_home_depot');
 
@@ -146,8 +146,8 @@ s_home_depot.onclick = function() {
 
     for (depot of depots) {
         const option = document.createElement('option');
-        option.value = '1';
-        option.innerText = `${depot.depotAbbreviation}, ${depot.railwayAbbreviation}`
+        option.value = depot.id;
+        option.innerText = `${depot.abbreviation}, ${depot.railwayAbbreviation}`
         select.appendChild(option);
     }
 
