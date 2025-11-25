@@ -10,7 +10,7 @@ import java.util.List;
 public interface LocomotiveDepotRepository extends JpaRepository<LocomotiveDepot, Integer> {
 
     @Query("""
-           SELECT NEW com.nobukata.trainlife.dto.DepotListDto(d.shortTitle, r.abbreviation)
+           SELECT NEW com.nobukata.trainlife.dto.DepotListDto(d.id, d.shortTitle, r.abbreviation)
            FROM LocomotiveDepot d
            JOIN d.railwayId r
            """)

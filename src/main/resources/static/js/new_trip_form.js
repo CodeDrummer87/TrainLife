@@ -129,7 +129,7 @@ function validateLocoNumber(value) {
 }
 //endregion
 
-//region .:: Home depot
+//region .:: A Home Depot
 const p_home_depot = document.getElementById('p_home_depot');
 const s_home_depot = document.getElementById('s_home_depot');
 
@@ -146,8 +146,8 @@ s_home_depot.onclick = function() {
 
     for (depot of depots) {
         const option = document.createElement('option');
-        option.value = '1';
-        option.innerText = `${depot.depotAbbreviation}, ${depot.railwayAbbreviation}`
+        option.value = depot.id;
+        option.innerText = `${depot.abbreviation}, ${depot.railwayAbbreviation}`
         select.appendChild(option);
     }
 
@@ -564,6 +564,51 @@ s_arrival_traffic_light.onclick = function() {
 
     p_arrival_traffic_light.appendChild(select);
     select.focus();
+}
+//endregion
+
+//region .:: Departure and Arrival Time
+const p_departure_time = document.getElementById('p_departure_time');
+const s_departure_time = document.getElementById('s_departure_time');
+const p_arrival_time = document.getElementById('p_arrival_time');
+const s_arrival_time = document.getElementById('s_arrival_time');
+
+s_departure_time.onclick = function() {
+    setTime(s_departure_time, 'departure_time', p_departure_time);
+}
+s_arrival_time.onclick = function() {
+    setTime(s_arrival_time, 'arrival_time', p_arrival_time);
+}
+
+function setTime(span, item, element) {
+    span.hidden = true;
+    let input = document.createElement('input');
+    input.type = 'time';
+    input.classList.add('short-field');
+    input.value = sessionStorage.getItem(item) === null ?
+        '00:00' : sessionStorage.getItem(item);
+    input.autofocus = true;
+
+    input.onblur = function() {
+        convertToTimeParagraph(input, span, item);
+    }
+    input.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+            convertToTimeParagraph(input, span, item);
+        }
+    }
+
+    element.appendChild(input);
+    input.focus();
+}
+
+function convertToTimeParagraph(input, span, item) {
+    const value = input.value;
+    span.innerText = value;
+    sessionStorage.setItem(item, value);
+    input.remove();
+    span.style.color = '#e8c273';
+    span.hidden = false;
 }
 //endregion
 
