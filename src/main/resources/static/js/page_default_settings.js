@@ -125,13 +125,16 @@ setValueAndColor(s_conditional_length, 'conditional_length', 'условная �
 setValueAndColor(s_tailcar_number, 'tailcar_number', 'номер хвостового вагона');
 setValueAndColor(s_departure_traffic_light, 'departure_traffic_light', '(светофор)');
 setValueAndColor(s_arrival_traffic_light, 'arrival_traffic_light', '(светофор)');
+setValueAndColor(s_departure_time, 'departure_time', 'время');
+setValueAndColor(s_arrival_time, 'arrival_time', 'время');
 checkTrafficLightList();
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
         value : sessionStorage.getItem(item);
 
-    element.style.color = element.innerText === value ? 'darkkhaki' : '#33cd9e';
+    element.style.color = element.innerText === value ? 'darkkhaki' :
+        item.includes('time') ? '#e8c273': '#33cd9e';
 }
 
 function checkValueStation(stationElement, trainElement, trafficLightElement, defaultStation, defaultTrainNumber) {
