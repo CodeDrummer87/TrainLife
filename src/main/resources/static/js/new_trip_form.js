@@ -175,38 +175,129 @@ s_home_depot.onclick = function() {
 //region .:: Number of Brakeshoes
 const p_brakeshoes = document.getElementById('p_brakeshoes');
 const s_brakeshoes = document.getElementById('s_brakeshoes');
+let brakeshoes = { serviceable: 0, broken: 0 };
 
 s_brakeshoes.onclick = function() {
     s_brakeshoes.hidden = true;
     const input = document.createElement('input');
     input.type = 'text';
-    input.placeholder = 'кол-во';
-    input.value = '';
+    input.pattern = '\d{1,2}-\d{1,2}';
+    input.placeholder = 'чч-чч';
+    input.title = 'исправные ТБ - неисправные ТБ';
+    input.maxLength = 5;
     input.autofocus = true;
 
-    input.addEventListener('keydown', function(event) {
-        const allowedInput = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Backspace'];
-        if (!allowedInput.includes(event.key) || input.value.length > 1) {
-            if (event.key !== 'Backspace')
-                event.preventDefault();
+    input.addEventListener('keydown', function(e) {
+        const allowedInput = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', 'Backspace'];
+        if (!allowedInput.includes(e.key) || input.value.length > 4) {
+            if (e.key !== 'Backspace')
+                e.preventDefault();
+        }
+        let value = e.target.value;
+        const incorrectInput = ['1', '2', '3'];
+        if (e.key === '-' && incorrectInput.includes(value)) {
+            e.preventDefault();
+            displayMessage('Количество исправных ТБ не может быть меньше 4-х', false);
+        }
+        if (e.key === '0' && value.length === 0) {
+            e.preventDefault();
+            displayMessage('Количество исправных ТБ не может начинаться с нуля', false);
+        }
+        if (value.length === 0 && e.key === '-') {
+            e.preventDefault();
+            displayMessage('Некорректный ввод количества исправных ТБ', false);
+        }
+        if (e.key === '-' && value.includes('-')) {
+            e.preventDefault();
+            displayMessage('Символ вычитания неисправных ТБ может быть в единственном числе', false);
+        }
+        if (e.key === '0' && (value[value.length - 1] === '-' || value.length === 2)) {
+            e.preventDefault();
+            displayMessage('Количество неисправных ТБ не может начинаться с нуля', false);
+        }
+        if (value.length === 2 && e.key !== 'Enter' && e.key !== '-' && !value.includes('-')) {
+            if (e.key !== 'Backspace')
+                input.value += '-';
+        }
+        if (e.key === 'Backspace' && input.value[input.value.length - 2] === '-') {
+            input.value = input.value.substring(0, input.value.indexOf('-') + 1);
         }
     });
 
-    input.onblur = function() {
-        getNumberOfBrakeShoes(input);
+    input.onblur = async function() {
+        if (validateRecord(input)) {
+            await getNumberOfBrakeShoes(input);
+        }
     }
-
-    input.onkeydown = function(e) {
+    input.onkeydown = async function(e) {
         if (e.key === 'Enter')
-            getNumberOfBrakeShoes(input);
+            if (validateRecord(input)) {
+                await getNumberOfBrakeShoes(input);
+            }
     }
 
     p_brakeshoes.appendChild(input);
     input.focus();
 }
 
-function getNumberOfBrakeShoes(input) {
-    let value = input.value.trim().length === 0 ? 'количество' : input.value.trim();
+function getBrakeshoes(record) {
+    if (record.includes('-')) {
+        const splitRecord = record.split('-');
+        brakeshoes.serviceable = parseInt(splitRecord[0]);
+        brakeshoes.broken = parseInt(splitRecord[1]);
+    } else {
+        brakeshoes.serviceable = record.trim().length === 0 ? 0 : parseInt(record);
+        brakeshoes.broken = 0;
+    }
+}
+
+function validateRecord(input) {
+    let value = input.value;
+    let record = value[value.length - 1] === '-' ? value.replace('-', '') : value;
+    input.value = record;
+    getBrakeshoes(record);
+    if (record.includes('-')) {
+        if (brakeshoes.broken > brakeshoes.serviceable) {
+            displayMessage('Ошибка: число неисправных ТБ превосходит число исправных', false);
+            return false;
+        }
+    }
+    if (brakeshoes.serviceable > 40) {
+        displayMessage('Ошибка: на борту локомотива не может быть более 40 ТБ', false);
+        return false;
+    }
+    return true;
+}
+
+async function getNumberOfBrakeShoes(input) {
+    getBrakeshoes(input.value);
+
+    try {
+        const response = await fetch('/api/calculate-securing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(brakeshoes)
+        });
+
+        if (!response.ok) {
+            displayMessage('HTTP ошибка выполнения запроса: закрепление поезда', false);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.text();
+        displayMessage(result, true);
+        //.:: разместить ответ в закреплении состава
+    } catch(error) {
+        displayMessage('Сетевая ошибка запроса: закрепление поезда', false);
+        console.error(`Сетевая ошибка запроса: закрепление поезда: ` + error);
+    }
+
+    let value;
+    if (input.value.includes('-')) {
+        value = brakeshoes.broken === 0 ? brakeshoes.serviceable : brakeshoes.serviceable + '-' + brakeshoes.broken;
+    } else {
+        value = brakeshoes.serviceable === 0 ? 'количество' : brakeshoes.serviceable;
+    }
     sessionStorage.setItem('brakeshoes', value);
     s_brakeshoes.innerText = value;
     input.hidden = true;
