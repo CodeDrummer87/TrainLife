@@ -1,4 +1,6 @@
 const url = 'http://localhost:8080/api/v1';
+let currentMessage = document.getElementById('currentMessage');
+let currentMessageTimerId;
 
 let locomotiveSeries = [];
 let depots = [];
@@ -148,4 +150,15 @@ function checkTrafficLightList() {
     s_arrival_station.dataset.id = sessionStorage.getItem('arrival_station_id');
     departureTrafficLightList = JSON.parse(sessionStorage.getItem('departure_traffic_light_list'));
     arrivalTrafficLightList = JSON.parse(sessionStorage.getItem('arrival_traffic_light_list'));
+}
+
+function displayMessage(message, success) {
+    if (currentMessageTimerId) {
+        clearTimeout(currentMessageTimerId);
+    }
+    success ? currentMessage.style.color = '#5fa619' : currentMessage.style.color = '#ef3346';
+    currentMessage.innerText = message;
+    currentMessageTimerId = setTimeout(function() {
+        currentMessage.innerHTML = '&nbsp';
+    }, 5000);
 }
