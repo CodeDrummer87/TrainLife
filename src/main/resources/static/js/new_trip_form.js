@@ -120,7 +120,7 @@ s_loconumber.onclick = function() {
     input.focus();
 }
 
-function validateLocoNumber(value) {
+function convertLocoNumber(value) {
     if (value === '0' || value === 'номер')
         return 'номер';
 
@@ -173,9 +173,23 @@ s_home_depot.onclick = function() {
 //endregion
 
 //region .:: Number of Brakeshoes
+const p_train_weight = document.getElementById('p_train_weight');
+const s_train_weight = document.getElementById('s_train_weight');
+
 const p_brakeshoes = document.getElementById('p_brakeshoes');
 const s_brakeshoes = document.getElementById('s_brakeshoes');
-let brakeshoes = { serviceable: 0, broken: 0 };
+const i_loaded_train = document.getElementById('i_loaded_train');
+const i_selective_braking = document.getElementById('i_selective_braking');
+let isEnterPressed = false;
+let defaultModel = {
+    weight: 0,
+    brakeShoes: { serviceable: 0, broken: 0 },
+    isLoadedTrain: false,
+    isSelectiveBraking: false
+};
+let trainSecuring = sessionStorage.getItem('trainSecuringData') === null ?
+    defaultModel : JSON.parse(sessionStorage.getItem('trainSecuringData'));
+
 
 s_brakeshoes.onclick = function() {
     s_brakeshoes.hidden = true;
@@ -188,7 +202,8 @@ s_brakeshoes.onclick = function() {
     input.autofocus = true;
 
     input.addEventListener('keydown', function(e) {
-        const allowedInput = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', 'Backspace'];
+        const allowedInput = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-',
+            'ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft', 'Backspace', 'Enter'];
         if (!allowedInput.includes(e.key) || input.value.length > 4) {
             if (e.key !== 'Backspace')
                 e.preventDefault();
@@ -222,87 +237,98 @@ s_brakeshoes.onclick = function() {
         if (e.key === 'Backspace' && input.value[input.value.length - 2] === '-') {
             input.value = input.value.substring(0, input.value.indexOf('-') + 1);
         }
+        if ((e.key === 'ArrowUp' || e.key === 'ArrowRight') && !value.includes('-')) {
+            const result = parseInt(input.value);
+            let val = Number.isFinite(result) ? result : 0;
+            input.value = (val + 1 < 41 ? ++val : val).toString();
+            setTimeout(() => {
+                this.setSelectionRange(this.value.length, this.value.length);
+            }, 0);
+        }
+        if ((e.key === 'ArrowDown' || e.key === 'ArrowLeft') && !value.includes('-')) {
+            const result = parseInt(input.value);
+            let val = Number.isFinite(result) ? result : 0;
+            input.value = (val - 1 > 3 ? --val : val).toString();
+            setTimeout(() => {
+                this.setSelectionRange(this.value.length, this.value.length);
+            }, 0);
+        }
     });
 
     input.onblur = async function() {
+        if (isEnterPressed) {
+            isEnterPressed = false;
+            return;
+        }
         if (validateRecord(input)) {
-            await getNumberOfBrakeShoes(input);
+            await getTrainSecuringRecord(input);
+        } else {
+            input.focus();
         }
     }
     input.onkeydown = async function(e) {
-        if (e.key === 'Enter')
+        if (e.key === 'Enter') {
+            isEnterPressed = true;
             if (validateRecord(input)) {
-                await getNumberOfBrakeShoes(input);
+                await getTrainSecuringRecord(input);
             }
+        }
     }
 
     p_brakeshoes.appendChild(input);
     input.focus();
 }
 
-function getBrakeshoes(record) {
+function getTrainSecuringData(record) {
     if (record.includes('-')) {
         const splitRecord = record.split('-');
-        brakeshoes.serviceable = parseInt(splitRecord[0]);
-        brakeshoes.broken = parseInt(splitRecord[1]);
+        trainSecuring.brakeShoes.serviceable = parseInt(splitRecord[0]);
+        trainSecuring.brakeShoes.broken = parseInt(splitRecord[1]);
     } else {
-        brakeshoes.serviceable = record.trim().length === 0 ? 0 : parseInt(record);
-        brakeshoes.broken = 0;
+        trainSecuring.brakeShoes.serviceable = record.trim().length === 0 ? 0 : parseInt(record);
+        trainSecuring.brakeShoes.broken = 0;
     }
+
+    saveFieldsValue();
 }
 
 function validateRecord(input) {
     let value = input.value;
     let record = value[value.length - 1] === '-' ? value.replace('-', '') : value;
     input.value = record;
-    getBrakeshoes(record);
+    getTrainSecuringData(record);
     if (record.includes('-')) {
-        if (brakeshoes.broken > brakeshoes.serviceable) {
+        if (trainSecuring.brakeShoes.broken > trainSecuring.brakeShoes.serviceable) {
             displayMessage('Ошибка: число неисправных ТБ превосходит число исправных', false);
             return false;
         }
     }
-    if (brakeshoes.serviceable > 40) {
+    if (trainSecuring.brakeShoes.serviceable < 4) {
+        displayMessage('Количество исправных ТБ не может быть меньше 4-х', false);
+        return false;
+    }
+    if (trainSecuring.brakeShoes.serviceable > 40) {
         displayMessage('Ошибка: на борту локомотива не может быть более 40 ТБ', false);
         return false;
     }
     return true;
 }
 
-async function getNumberOfBrakeShoes(input) {
-    getBrakeshoes(input.value);
-
-    try {
-        const response = await fetch('/api/calculate-securing', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(brakeshoes)
-        });
-
-        if (!response.ok) {
-            displayMessage('HTTP ошибка выполнения запроса: закрепление поезда', false);
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const result = await response.text();
-        displayMessage(result, true);
-        //.:: разместить ответ в закреплении состава
-    } catch(error) {
-        displayMessage('Сетевая ошибка запроса: закрепление поезда', false);
-        console.error(`Сетевая ошибка запроса: закрепление поезда: ` + error);
-    }
-
+async function getTrainSecuringRecord(input) {
     let value;
     if (input.value.includes('-')) {
-        value = brakeshoes.broken === 0 ? brakeshoes.serviceable : brakeshoes.serviceable + '-' + brakeshoes.broken;
+        value = trainSecuring.brakeShoes.broken === 0 ?
+            trainSecuring.brakeShoes.serviceable : trainSecuring.brakeShoes.serviceable + '-' + trainSecuring.brakeShoes.broken;
     } else {
-        value = brakeshoes.serviceable === 0 ? 'количество' : brakeshoes.serviceable;
+        value = trainSecuring.brakeShoes.serviceable === 0 ? 'количество' : trainSecuring.brakeShoes.serviceable;
     }
     sessionStorage.setItem('brakeshoes', value);
     s_brakeshoes.innerText = value;
     input.hidden = true;
     setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
     s_brakeshoes.hidden = false;
+
+    await fetchSecuringRecord();
 }
 //endregion
 
@@ -459,9 +485,6 @@ s_train_number.onclick = function() {
 //endregion
 
 //region .:: Train Weight
-const p_train_weight = document.getElementById('p_train_weight');
-const s_train_weight = document.getElementById('s_train_weight');
-
 s_train_weight.onclick = function() {
     s_train_weight.hidden = true;
     const input = document.createElement('input');
@@ -472,12 +495,16 @@ s_train_weight.onclick = function() {
     input.placeholder = 'масса поезда';
     input.autofocus = true;
 
-    input.onblur = function() {
+    input.onblur = async function() {
         getNumber(input, 'масса поезда', 'train_weight', s_train_weight);
+        saveFieldsValue();
+        await fetchSecuringRecord();
     }
-    input.onkeydown = function(e) {
+    input.onkeydown = async function(e) {
         if (e.key === 'Enter') {
             getNumber(input, 'масса поезда', 'train_weight', s_train_weight);
+            saveFieldsValue();
+            await fetchSecuringRecord();
         }
     }
 
@@ -703,10 +730,68 @@ function convertToTimeParagraph(input, span, item) {
 }
 //endregion
 
+//region .:: Train Securing
+const s_train_securing = document.getElementById('s_train_securing');
+
+i_loaded_train.onchange = async function() {
+    saveFieldsValue();
+    await fetchSecuringRecord();
+    sessionStorage.setItem('checkbox_loaded_train', JSON.stringify(i_loaded_train.checked));
+}
+i_selective_braking.onchange = async function() {
+    saveFieldsValue();
+    await fetchSecuringRecord();
+    sessionStorage.setItem('checkbox_selective_braking', JSON.stringify(i_selective_braking.checked));
+}
+
+function saveFieldsValue() {
+    trainSecuring.weight = s_train_weight.innerText === 'масса поезда' ? 0 : parseInt(s_train_weight.innerText);
+    trainSecuring.isLoadedTrain = !!i_loaded_train.checked;
+    trainSecuring.isSelectiveBraking = !!i_selective_braking.checked;
+}
+
+async function fetchSecuringRecord() {
+    if (s_train_weight.innerText === 'масса поезда') {
+        displayMessage('Для расчёта закрепления поезда укажите его массу', false);
+        return;
+    }
+    if (s_brakeshoes.innerText === 'количество') {
+        displayMessage('Для расчёта закрепления поезда укажите количество ТБ', false);
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/v1/calculate-securing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(trainSecuring)
+        });
+        if (!response.ok) {
+            displayMessage('HTTP ошибка выполнения запроса: закрепление поезда', false);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.text();
+        s_train_securing.innerText = result;
+        s_train_securing.style.color = '#e8c273';
+        sessionStorage.setItem('trainSecuring', result);
+        sessionStorage.setItem('trainSecuringData', JSON.stringify(trainSecuring));
+        displayMessage('Произведён автоматический расчёт закрепления поезда', true);
+    } catch(error) {
+        displayMessage('Сетевая ошибка запроса: закрепление поезда', false);
+        console.error(`Сетевая ошибка запроса: закрепление поезда: ` + error);
+    }
+}
+//endregion
+
 //.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 function getNumber(input, defaultRecord, itemName, span) {
     let value = input.value.trim().length === 0 ? defaultRecord : input.value.trim();
-    value = validateLocoNumber(value);
+    if (itemName.includes('loconumber')) {
+        value = convertLocoNumber(value);
+    } else {
+        value = parseInt(value) === 0 ? defaultRecord : value;
+    }
     sessionStorage.setItem(itemName, value);
     span.innerText = value;
     input.hidden = true;

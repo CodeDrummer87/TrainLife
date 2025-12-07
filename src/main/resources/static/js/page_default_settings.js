@@ -129,14 +129,17 @@ setValueAndColor(s_departure_traffic_light, 'departure_traffic_light', '(све�
 setValueAndColor(s_arrival_traffic_light, 'arrival_traffic_light', '(светофор)');
 setValueAndColor(s_departure_time, 'departure_time', 'время');
 setValueAndColor(s_arrival_time, 'arrival_time', 'время');
+setValueAndColor(s_train_securing, 'trainSecuring', 'расчёт закрепления');
 checkTrafficLightList();
+setCheckbox(i_loaded_train, 'checkbox_loaded_train');
+setCheckbox(i_selective_braking, 'checkbox_selective_braking');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
         value : sessionStorage.getItem(item);
 
     element.style.color = element.innerText === value ? 'darkkhaki' :
-        item.includes('time') ? '#e8c273': '#33cd9e';
+        (item.includes('time') || item.includes('trainSecuring')) ? '#e8c273' : '#33cd9e';
 }
 
 function checkValueStation(stationElement, trainElement, trafficLightElement, defaultStation, defaultTrainNumber) {
@@ -150,6 +153,10 @@ function checkTrafficLightList() {
     s_arrival_station.dataset.id = sessionStorage.getItem('arrival_station_id');
     departureTrafficLightList = JSON.parse(sessionStorage.getItem('departure_traffic_light_list'));
     arrivalTrafficLightList = JSON.parse(sessionStorage.getItem('arrival_traffic_light_list'));
+}
+
+function setCheckbox(element, item) {
+    element.checked = JSON.parse(sessionStorage.getItem(item));
 }
 
 function displayMessage(message, success) {

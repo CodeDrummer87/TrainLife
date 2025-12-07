@@ -76,7 +76,7 @@ legend {
     visibility: hidden;
 }
 
-#p_turnout_point>input[type="checkbox"] {
+input[type="checkbox"] {
     width: 10px;
     height: 10px;
 }
@@ -186,4 +186,12 @@ input[type="datetime-local"], select, input {
 #p_loconumber>input,
 #p_brakeshoes>input {
     width: 57px;
+}
+
+input[type="checkbox"] {
+    accent-color: burlywood;
+}
+
+input[type="checkbox"]:checked + label {
+    color: #86c618;
 }

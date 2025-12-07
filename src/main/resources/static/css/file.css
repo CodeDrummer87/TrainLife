@@ -143,3 +143,12 @@ span:hover {
     -moz-user-select: none;
     -ms-user-select: none;
 }
+
+.labels {
+    color: #1f915b;
+    font-size: 0.75rem;
+}
+
+label {
+    cursor: pointer;
+}
