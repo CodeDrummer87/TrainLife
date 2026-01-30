@@ -11,21 +11,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "locomotive_depots")
-public class LocomotiveDepot {
+@Table(name = "brake_tests_locomotive_depots")
+public class BrakeTestsLocomotiveDepots {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "railway_id")
-    private Railway railway;
+    @JoinColumn(name = "brake_test_id")
+    private BrakeTest brakeTest;
 
-    @Column(name = "short_title")
-    private String shortTitle;
-    @Column(name = "full_title")
-    private String fullTitle;
-    private String address;
-    private String code;
+    @ManyToOne
+    @JoinColumn(name = "locomotive_depot_id")
+    private LocomotiveDepot locomotiveDepot;
+
 }

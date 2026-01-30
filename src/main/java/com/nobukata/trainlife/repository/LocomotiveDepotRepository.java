@@ -12,7 +12,7 @@ public interface LocomotiveDepotRepository extends JpaRepository<LocomotiveDepot
     @Query("""
            SELECT NEW com.nobukata.trainlife.dto.DepotListDto(d.id, d.shortTitle, r.abbreviation)
            FROM LocomotiveDepot d
-           JOIN d.railwayId r
+           JOIN d.railway r
            """)
     List<DepotListDto> findAllDepots();
 }
