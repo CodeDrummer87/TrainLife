@@ -784,6 +784,65 @@ async function fetchSecuringRecord() {
 }
 //endregion
 
+//region .:: Brake Test
+const p_brake_test = document.getElementById('p_brake_test');
+const s_brake_test = document.getElementById('s_brake_test');
+const div_brake_test = document.getElementById('div_brake_test');
+
+s_brake_test.onclick = async function() {
+
+    const trainNumberString = s_train_number.innerText;
+    if (trainNumberString === 'номер') {
+        displayMessage('Введите номер поезда', false);
+        return;
+    }
+
+    s_brake_test.hidden = true;
+
+    const depot_id = 1; //.:: temporary code ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    const isEvenDirection = parseInt(trainNumberString, 10) % 2 === 0;
+    brakeTestsList = await fetchBrakeTests(depot_id, isEvenDirection);
+
+    const select = document.createElement('select');
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '0';
+    defaultOption.innerText = 'выбрать';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    select.appendChild(defaultOption);
+
+    for (brakeTest of brakeTestsList) {
+        const option = document.createElement('option');
+        option.value = brakeTest.id;
+        option.innerText = `(${brakeTest.requiredSpeed} км/ч) ${brakeTest.section}    - ${brakeTest.point} -  `;
+        select.appendChild(option);
+    }
+
+    select.onchange = function() {
+        select.hidden = true;
+        let brakeTest = select.options[select.selectedIndex].innerText;
+        ++brakeTestCounter;
+        sessionStorage.setItem('brakeTestCounter', brakeTestCounter);
+        sessionStorage.setItem('brakeTest_' + brakeTestCounter, brakeTest);
+
+        const p = createRecord(brakeTest, brakeTestCounter);
+        div_brake_test.appendChild(p);
+        s_brake_test.hidden = false;
+    }
+
+    select.onblur = function() {
+        if (select.value === '0') {
+            select.hidden = true;
+            s_home_depot.hidden = false;
+            s_brake_test.hidden = false;
+        }
+    }
+
+    p_brake_test.appendChild(select);
+    select.focus();
+}
+//endregion
+
 //.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 function getNumber(input, defaultRecord, itemName, span) {
     let value = input.value.trim().length === 0 ? defaultRecord : input.value.trim();

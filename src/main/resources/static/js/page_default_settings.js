@@ -7,6 +7,9 @@ let depots = [];
 let allStations = [];
 let departureTrafficLightList = [];
 let arrivalTrafficLightList = [];
+let brakeTestCounter = sessionStorage.getItem('brakeTestCounter') === null ?
+    0 : sessionStorage.getItem('brakeTestCounter');
+let brakeTestsList = [];
 
 async function fetchLocomotiveSeries() {
     try {
@@ -110,6 +113,24 @@ async function fetchTrafficLights(span_station, defaultRecord) {
         }
     }
 }
+
+async function fetchBrakeTests(depot_id, isEvenDirection) {
+    try {
+        const uri = `/brake-tests?depot-id=${depot_id}&is-even-direction=${isEvenDirection}`;
+        const response = await fetch(url + uri);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const brakeTests = await response.json();
+        return Array.isArray(brakeTests) ? brakeTests : [];
+    } catch(error) {
+        const dir = isEvenDirection ? "чётного" : "нечётного";
+        console.error(`Ошибка выполнения запроса на извлечение списка проб тормозов ${dir} направления: ` + error.message);
+        return [];
+    }
+}
 //.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 setValueAndColor(s_attendance, 'attendance_date', 'установить');
 setValueAndColor(s_series, 'series', 'серия');
@@ -133,6 +154,7 @@ setValueAndColor(s_train_securing, 'trainSecuring', 'расчёт закрепл
 checkTrafficLightList();
 setCheckbox(i_loaded_train, 'checkbox_loaded_train');
 setCheckbox(i_selective_braking, 'checkbox_selective_braking');
+setRecords(div_brake_test, 'brakeTest_');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
@@ -157,6 +179,36 @@ function checkTrafficLightList() {
 
 function setCheckbox(element, item) {
     element.checked = JSON.parse(sessionStorage.getItem(item));
+}
+
+function setRecords(parent, substring) {
+    let keys = Object.keys(sessionStorage);
+    for (let key of keys) {
+        if (key.includes(substring)) {
+            const number = key.slice(substring.length);
+            const p = createRecord(sessionStorage.getItem(key), number);
+            parent.appendChild(p);
+        }
+    }
+}
+
+function createRecord(text, counter) {
+    const p = document.createElement('p');
+    p.innerText = text;
+    p.classList.add('pre-element');
+
+    const span = document.createElement('span');
+    span.classList.add('red-span');
+    span.dataset.id = counter;
+    span.innerText = ' x ';
+    span.title = 'удалить';
+    span.onclick = async function() {
+        const parent = span.parentNode;
+        parent?.remove();
+        sessionStorage.removeItem('brakeTest_' + span.dataset.id);
+    }
+    p.appendChild(span);
+    return p;
 }
 
 function displayMessage(message, success) {

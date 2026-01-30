@@ -152,3 +152,24 @@ span:hover {
 label {
     cursor: pointer;
 }
+
+.big-bold {
+    font-size: 1.1rem;
+    font-weight: bolder;
+}
+
+.pre-element {
+    white-space: pre;
+    margin: 0;
+    color: #86c618;
+    font-family: Copperplate, serif;
+    font-size: 0.75rem;
+}
+
+.red-span {
+    white-space: pre;
+    color: #df3333;
+    font-size: 0.9rem;
+    font-family: 'SonyEricssonLogo', serif;
+    font-weight: revert;
+}

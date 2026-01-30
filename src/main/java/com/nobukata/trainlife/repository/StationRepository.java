@@ -12,8 +12,8 @@ public interface StationRepository extends JpaRepository<Station, Integer> {
     @Query("""
             SELECT NEW com.nobukata.trainlife.dto.StationTitleDto(s.id, s.title)
             FROM StationsLocomotiveDepots sld
-            JOIN sld.stationId s
-            JOIN sld.locomotiveDepotId ld
+            JOIN sld.station s
+            JOIN sld.locomotiveDepot ld
             WHERE ld.id = :allocationId
             ORDER BY s.title
            """)
@@ -22,8 +22,8 @@ public interface StationRepository extends JpaRepository<Station, Integer> {
     @Query("""
             SELECT NEW com.nobukata.trainlife.dto.StationTitleDto(s.id, s.title)
             FROM StationsLocomotiveDepots sld
-            INNER JOIN sld.stationId s
-            INNER JOIN sld.locomotiveDepotId ld
+            INNER JOIN sld.station s
+            INNER JOIN sld.locomotiveDepot ld
             WHERE ld.id = :allocationId AND s.hasTurnoutPoint = true
             ORDER by s.title
            """)
