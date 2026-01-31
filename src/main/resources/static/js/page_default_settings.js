@@ -1,4 +1,7 @@
 const url = 'http://localhost:8080/api/v1';
+
+let copyright = document.getElementById('copyright');
+copyright.innerText = `\u00A9\u00A0Поездная жизнь\u00A0-\u00A0${new Date().getFullYear()}.\u00A0Все права защищены`
 let currentMessage = document.getElementById('currentMessage');
 let currentMessageTimerId;
 
@@ -218,6 +221,6 @@ function displayMessage(message, success) {
     success ? currentMessage.style.color = '#5fa619' : currentMessage.style.color = '#ef3346';
     currentMessage.innerText = message;
     currentMessageTimerId = setTimeout(function() {
-        currentMessage.innerHTML = '&nbsp';
+        currentMessage.innerText = '\u00A0';
     }, 5000);
 }
