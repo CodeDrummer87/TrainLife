@@ -173,3 +173,30 @@ label {
     font-family: 'SonyEricssonLogo', serif;
     font-weight: revert;
 }
+
+.tips {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    width: 135px;
+    height: 100px;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 300;
+    z-index: 99;
+}
+
+.tip {
+    margin: 2px;
+    padding: 0 2px;
+    font-size: 0.8rem;
+    color: rgb(37, 207, 219);
+    background-color:rgba(0, 0, 0, 0.5);
+}
+
+.selected-tip {
+    color:  rgb(86, 238, 10);
+    border: 1px solid rgb(52, 222, 9);
+    border-radius: 7px;
+    box-shadow: 1px 3px 3px rgb(0, 196, 131);
+}

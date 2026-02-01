@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS stations(
     railway_id INTEGER NOT NULL,
     code VARCHAR(6) NOT NULL UNIQUE,
     has_turnout_point BOOLEAN DEFAULT FALSE,
+    is_observed BOOLEAN DEFAULT FALSE,
 
     FOREIGN KEY (railway_id) REFERENCES railways(id) ON DELETE CASCADE
 );
@@ -96,3 +97,7 @@ VALUES
 UPDATE stations
 SET has_turnout_point = TRUE
 WHERE id IN (1, 7, 9, 10, 23, 36, 46, 47, 64, 76);
+
+UPDATE stations
+SET is_observed = TRUE
+WHERE id IN (1, 2, 8, 9, 10, 15, 17, 23, 25, 29, 31, 36, 41, 46, 57);

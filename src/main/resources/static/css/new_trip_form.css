@@ -195,3 +195,12 @@ input[type="checkbox"] {
 input[type="checkbox"]:checked + label {
     color: #86c618;
 }
+
+.thin-input {
+    margin-top: 2px;
+    width: 135px;
+    height: 17px;
+    padding-left: 4px;
+    font-family: Copperplate, serif;
+    font-size: 0.7rem;
+}

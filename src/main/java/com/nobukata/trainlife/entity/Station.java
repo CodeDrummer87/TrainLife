@@ -23,4 +23,6 @@ public class Station {
     private String code;
     @Column(name = "has_turnout_point")
     private Boolean hasTurnoutPoint;
+    @Column(name = "is_observed")
+    private Boolean isObserved;
 }
