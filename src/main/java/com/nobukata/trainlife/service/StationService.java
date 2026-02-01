@@ -15,11 +15,15 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public List<StationTitleDto> getAllStations(Integer allocationId) {
-        return stationRepository.findAllStationsByAllocationId(allocationId);
+    public List<StationTitleDto> getAllStations(Integer depotId) {
+        return stationRepository.findAllStationsByAllocationId(depotId);
     }
 
-    public List<StationTitleDto> getBaseStations(Integer allocationId) {
-        return stationRepository.findStationsWithTurnoutByAllocationId(allocationId);
+    public List<StationTitleDto> getBaseStations(Integer depotId) {
+        return stationRepository.findStationsWithTurnoutByAllocationId(depotId);
+    }
+
+    public List<StationTitleDto> getObservedStations(Integer depotId) {
+        return stationRepository.findObservedStations(depotId);
     }
 }

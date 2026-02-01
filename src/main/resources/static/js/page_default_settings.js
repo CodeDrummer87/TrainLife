@@ -10,9 +10,12 @@ let depots = [];
 let allStations = [];
 let departureTrafficLightList = [];
 let arrivalTrafficLightList = [];
+
 let brakeTestCounter = sessionStorage.getItem('brakeTestCounter') === null ?
     0 : sessionStorage.getItem('brakeTestCounter');
-let brakeTestsList = [];
+
+let observedStationCounter = sessionStorage.getItem('observedStationCounter') === null ?
+    0 : sessionStorage.getItem('observedStationCounter');
 
 async function fetchLocomotiveSeries() {
     try {
@@ -75,10 +78,10 @@ async function initStations() {
 (() => initStations())();
 
 async function fetchStations() {
-    let allocationId = 1;
+    let depotId = 1;    //.:: temporary code ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     try {
-        const uri = i_checkbox.checked ? `/${allocationId}/base-station-list` : `/${allocationId}/station-list`;
-        const response = await fetch(url + '/stations/allocations' + uri);
+        const uri = i_checkbox.checked ? `/base-list` : `/list`;
+        const response = await fetch(url + `/stations/depot/${depotId}` + uri);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -134,6 +137,23 @@ async function fetchBrakeTests(depot_id, isEvenDirection) {
         return [];
     }
 }
+
+async function fetchObservedStations(depot_id) {
+    try {
+        const uri = `/stations/depot/${depot_id}/observed`;
+        const response = await fetch(url + uri);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const stations = await response.json();
+        return Array.isArray(stations) ? stations.map(s => s.title) : [];
+    } catch(error) {
+        console.error(`Ошибка выполнения запроса на извлечение списка проследуемых станций: ` + error.message);
+        return [];
+    }
+}
 //.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 setValueAndColor(s_attendance, 'attendance_date', 'установить');
 setValueAndColor(s_series, 'series', 'серия');
@@ -158,6 +178,7 @@ checkTrafficLightList();
 setCheckbox(i_loaded_train, 'checkbox_loaded_train');
 setCheckbox(i_selective_braking, 'checkbox_selective_braking');
 setRecords(div_brake_test, 'brakeTest_');
+setRecords(div_stations_passed, 'observedStation_');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
@@ -195,7 +216,7 @@ function setRecords(parent, substring) {
     }
 }
 
-function createRecord(text, counter) {
+function createRecord(text, counter, item) {
     const p = document.createElement('p');
     p.innerText = text;
     p.classList.add('pre-element');
@@ -208,7 +229,7 @@ function createRecord(text, counter) {
     span.onclick = async function() {
         const parent = span.parentNode;
         parent?.remove();
-        sessionStorage.removeItem('brakeTest_' + span.dataset.id);
+        sessionStorage.removeItem(item + span.dataset.id);
     }
     p.appendChild(span);
     return p;

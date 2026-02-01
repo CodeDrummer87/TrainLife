@@ -58,15 +58,8 @@ const s_series = document.getElementById('s_series');
 
 s_series.onclick = function() {
     s_series.hidden = true;
-    const select = document.createElement('select');
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '0';
-    defaultOption.innerText = 'серия';
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    select.appendChild(defaultOption);
-
-    for (series of locomotiveSeries) {
+    const select = createEmptySelect('серия');
+    for (let series of locomotiveSeries) {
         const option = document.createElement('option');
         option.value = series.id;
         option.innerText = series.title;
@@ -136,15 +129,8 @@ const s_home_depot = document.getElementById('s_home_depot');
 s_home_depot.onclick = function() {
     s_home_depot.hidden = true;
 
-    const select = document.createElement('select');
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '0';
-    defaultOption.innerText = 'установить';
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    select.appendChild(defaultOption);
-
-    for (depot of depots) {
+    const select = createEmptySelect('установить');
+    for (let depot of depots) {
         const option = document.createElement('option');
         option.value = depot.id;
         option.innerText = `${depot.abbreviation}, ${depot.railwayAbbreviation}`
@@ -355,15 +341,8 @@ s_arrival_station.onclick = function() {
 
 function createStationSelect(span_station, default_text, isDeparture) {
 
-    const select = document.createElement('select');
-    const defaultOption = document.createElement('option');
-    defaultOption.value = 0;
-    defaultOption.innerText = default_text;
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    select.appendChild(defaultOption);
-
-    for (station of allStations) {
+    const select = createEmptySelect(default_text);
+    for (let station of allStations) {
         const option = document.createElement('option');
         option.value = station.id;
         option.innerText = station.title;
@@ -605,16 +584,9 @@ s_tailcar_number.onclick = function() {
 s_departure_traffic_light.onclick = function() {
 
     s_departure_traffic_light.hidden = true;
-    const select = document.createElement('select');
+    const select = createEmptySelect('выбрать');
     select.classList.add('short-field');
-    const defaultOption = document.createElement('option');
-    defaultOption.value = 0;
-    defaultOption.innerText = 'выбрать';
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    select.appendChild(defaultOption);
-
-    for (traffic_light of departureTrafficLightList) {
+    for (let traffic_light of departureTrafficLightList) {
         const option = document.createElement('option');
         option.value = traffic_light.id;
         option.innerText = traffic_light.title;
@@ -647,16 +619,9 @@ s_departure_traffic_light.onclick = function() {
 s_arrival_traffic_light.onclick = function() {
     s_arrival_traffic_light.hidden = true;
 
-    const select = document.createElement('select');
+    const select = createEmptySelect('выбрать');
     select.classList.add('short-field');
-    const defaultOption = document.createElement('option');
-    defaultOption.value = 0;
-    defaultOption.innerText = 'выбрать';
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    select.appendChild(defaultOption);
-
-    for (traffic_light of arrivalTrafficLightList) {
+    for (let traffic_light of arrivalTrafficLightList) {
         const option = document.createElement('option');
         option.value = traffic_light.id;
         option.innerText = traffic_light.title;
@@ -801,17 +766,10 @@ s_brake_test.onclick = async function() {
 
     const depot_id = 1; //.:: temporary code ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     const isEvenDirection = parseInt(trainNumberString, 10) % 2 === 0;
-    brakeTestsList = await fetchBrakeTests(depot_id, isEvenDirection);
+    const brakeTestList = await fetchBrakeTests(depot_id, isEvenDirection);
 
-    const select = document.createElement('select');
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '0';
-    defaultOption.innerText = 'выбрать';
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    select.appendChild(defaultOption);
-
-    for (brakeTest of brakeTestsList) {
+    const select = createEmptySelect('выбрать');
+    for (let brakeTest of brakeTestList) {
         const option = document.createElement('option');
         option.value = brakeTest.id;
         option.innerText = `(${brakeTest.requiredSpeed} км/ч) ${brakeTest.section}    - ${brakeTest.point} -  `;
@@ -825,7 +783,7 @@ s_brake_test.onclick = async function() {
         sessionStorage.setItem('brakeTestCounter', brakeTestCounter);
         sessionStorage.setItem('brakeTest_' + brakeTestCounter, brakeTest);
 
-        const p = createRecord(brakeTest, brakeTestCounter);
+        const p = createRecord(brakeTest, brakeTestCounter, 'brakeTest_');
         div_brake_test.appendChild(p);
         s_brake_test.hidden = false;
     }
@@ -833,7 +791,6 @@ s_brake_test.onclick = async function() {
     select.onblur = function() {
         if (select.value === '0') {
             select.hidden = true;
-            s_home_depot.hidden = false;
             s_brake_test.hidden = false;
         }
     }
@@ -842,6 +799,152 @@ s_brake_test.onclick = async function() {
     select.focus();
 }
 //endregion
+
+//region .:: Stations Passed
+const div_stations_passed = document.getElementById('div_stations_passed');
+const s_stations_passed = document.getElementById('s_stations_passed');
+let isTabPressed = false;
+let arrowNavigationHandler = false;
+let numberInputHandler = false;
+let currentLength = 0;
+let isCreated = false;
+
+s_stations_passed.onclick = async function() {
+    const depotId = 1;  //.:: temporary code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    const stations = await fetchObservedStations(depotId);
+    if (stations.length === 0) {
+        displayMessage('Список станций проследования пуст / Отсутствует интернет', false);
+        return;
+    }
+
+    isCreated = false;
+    s_stations_passed.hidden = true;
+    const outerDiv = document.createElement('div');
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Введите станцию'
+    input.classList.add('thin-input');
+    input.autofocus = true;
+    outerDiv.appendChild(input);
+
+    input.oninput = function() {
+        clearTips();
+
+        if (input.value.trim().length === 0) {
+            isTabPressed = false;
+        }
+        if(isTabPressed) {
+            input.removeEventListener('keydown', arrowNavigationHandler);
+        }
+
+        if (!isTabPressed) {
+            const invalidInput = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            let length = 0;
+            const val = input.value;
+            if (invalidInput.includes(val)) {
+                input.value = input.value.replace(val, '');
+                return;
+            }
+            const tipList = stations.filter(s => s.toLowerCase().startsWith(val.toLowerCase()));
+            if (tipList.length !== 0) {
+
+                const tips_div = document.createElement('div');
+                tips_div.classList.add('tips');
+                for (let tip of tipList) {
+                    const div = document.createElement('div');
+                    div.innerText = tip;
+                    div.classList.add('tip');
+                    tips_div.appendChild(div);
+                }
+                const tips = tips_div.getElementsByClassName('tip');
+                if (tips !== undefined) {
+                    let selectedIndex = 0;
+                    tips?.[selectedIndex].classList.add('selected-tip');
+
+                    arrowNavigationHandler = function(e) {
+                        if (selectedIndex < tips.length - 1 && e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            tips?.[selectedIndex++].classList.remove('selected-tip');
+                            tips?.[selectedIndex].classList.add('selected-tip');
+                        }
+                        if (selectedIndex > 0 && e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            tips?.[selectedIndex--].classList.remove('selected-tip');
+                            tips?.[selectedIndex].classList.add('selected-tip');
+                        }
+                        if (e.key === 'Tab') {
+                            e.preventDefault();
+                            isTabPressed = true;
+                            const value = `${tips?.[selectedIndex].innerText}\u00A0-\u00A0`;
+                            input.value = value;
+                            length = value.length;
+                            clearTips();
+                            input.focus();
+                            input.setSelectionRange(length, length);
+                            input.removeEventListener('keydown', arrowNavigationHandler);
+                        }
+                    }
+
+                    input.addEventListener('keydown', arrowNavigationHandler);
+                }
+                outerDiv.appendChild(tips_div);
+            }
+        } else {
+            const allowedInput = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Enter'];
+            if (currentLength === 0) {
+                currentLength = input.value.length;
+            }
+            numberInputHandler = function(e) {
+                if (e.key !== 'Backspace') {
+                    if (input.value.length < currentLength + 4) {
+                        if(!allowedInput.includes(e.key)) {
+                            e.preventDefault();
+                        } else {
+                            if (input.value.length === currentLength + 1 && !input.value.includes(':')) {
+                                input.value += ':';
+                            }
+                        }
+                    } else {
+                        e.preventDefault();
+                        if (e.key === 'Enter') {
+                            if (!isCreated) {
+                                isCreated = true;
+                                isTabPressed = false;
+                                currentLength = 0;
+                                arrowNavigationHandler = false;
+                                e.preventDefault();
+                                ++observedStationCounter;
+                                const text = input.value;
+                                sessionStorage.setItem('observedStationCounter', observedStationCounter);
+                                sessionStorage.setItem('observedStation_' + observedStationCounter, text);
+                                const p = createRecord(text, observedStationCounter, 'observedStation_');
+                                div_stations_passed.appendChild(p);
+
+                                outerDiv.hidden = true;
+                                s_stations_passed.hidden = false;
+                                input.remove();
+                                outerDiv.remove();
+                            }
+                        }
+                    }
+                } else {
+                    if (input.value.length === currentLength - 1) {
+                        e.preventDefault();
+                    }
+                }
+            }
+
+            input.addEventListener('keydown', numberInputHandler);
+        }
+    }
+
+    div_stations_passed.appendChild(outerDiv);
+}
+
+function clearTips() {
+    const div = document.getElementsByClassName('tips')[0];
+    div?.parentNode.removeChild(div);
+}
 
 //.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 function getNumber(input, defaultRecord, itemName, span) {
@@ -883,4 +986,15 @@ function removeClass(span, element, defaultRecord) {
     if (span.innerText !== defaultRecord) {
         element.classList.remove('inactive');
     }
+}
+
+function createEmptySelect(default_text) {
+    let select = document.createElement('select');
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '0';
+    defaultOption.innerText = default_text;
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    select.appendChild(defaultOption);
+    return select;
 }

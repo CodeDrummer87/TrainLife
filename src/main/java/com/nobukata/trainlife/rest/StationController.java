@@ -1,7 +1,6 @@
 package com.nobukata.trainlife.rest;
 
 import com.nobukata.trainlife.dto.StationTitleDto;
-import com.nobukata.trainlife.repository.StationRepository;
 import com.nobukata.trainlife.service.StationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,20 +20,30 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @GetMapping("/allocations/{allocationId}/station-list")
-    public ResponseEntity<List<StationTitleDto>> getAllStations(@PathVariable int allocationId) {
+    @GetMapping("/depot/{depotId}/list")
+    public ResponseEntity<List<StationTitleDto>> getAllStations(@PathVariable int depotId) {
         try {
-            List<StationTitleDto> stations = stationService.getAllStations(allocationId);
+            List<StationTitleDto> stations = stationService.getAllStations(depotId);
             return ResponseEntity.ok(stations);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @GetMapping("/allocations/{allocationId}/base-station-list")
-    public ResponseEntity<List<StationTitleDto>> getBaseStations(@PathVariable int allocationId) {
+    @GetMapping("/depot/{depotId}/base-list")
+    public ResponseEntity<List<StationTitleDto>> getBaseStations(@PathVariable int depotId) {
         try {
-            List<StationTitleDto> stations = stationService.getBaseStations(allocationId);
+            List<StationTitleDto> stations = stationService.getBaseStations(depotId);
+            return ResponseEntity.ok(stations);
+        } catch(Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("depot/{depotId}/observed")
+    public ResponseEntity<List<StationTitleDto>> getObservedStations(@PathVariable int depotId) {
+        try {
+            List<StationTitleDto> stations = stationService.getObservedStations(depotId);
             return ResponseEntity.ok(stations);
         } catch(Exception e) {
             return ResponseEntity.notFound().build();
