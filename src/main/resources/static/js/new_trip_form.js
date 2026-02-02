@@ -46,7 +46,7 @@ function convertToParagraph(input_time) {
     sessionStorage.setItem('attendance', input_time.value);
     sessionStorage.setItem('attendance_date', attendance_date);
 
-    input_time.hidden = true;
+    input_time?.parentNode?.removeChild(input_time);
     s_attendance.hidden = false;
     s_attendance.style.color = '#33cd9e';
 }
@@ -67,8 +67,8 @@ s_series.onclick = function() {
     }
 
     select.onchange = function() {
-        select.hidden = true;
         const series = select.options[select.selectedIndex].innerText;
+        select.parentNode.removeChild(select);
         sessionStorage.setItem('series', series);
         s_series.innerText = series;
         s_series.style.color = '#33cd9e';
@@ -77,7 +77,7 @@ s_series.onclick = function() {
 
     select.onblur = function() {
         if (select.value === '0') {
-            select.hidden = true;
+            select?.parentNode?.removeChild(select);
             s_series.hidden = false;
         }
     }
@@ -138,8 +138,8 @@ s_home_depot.onclick = function() {
     }
 
     select.onchange = function() {
-        select.hidden = true;
         let home_depot = select.options[select.selectedIndex].innerText;
+        select.parentNode.removeChild(select);
         sessionStorage.setItem('home_depot', home_depot);
         s_home_depot.innerText = home_depot;
         s_home_depot.style.color = '#33cd9e';
@@ -148,7 +148,7 @@ s_home_depot.onclick = function() {
 
     select.onblur = function() {
         if (select.value === '0') {
-            select.hidden = true;
+            select?.parentNode?.removeChild(select);
             s_home_depot.hidden = false;
         }
     }
@@ -310,7 +310,7 @@ async function getTrainSecuringRecord(input) {
     }
     sessionStorage.setItem('brakeshoes', value);
     s_brakeshoes.innerText = value;
-    input.hidden = true;
+    input?.parentNode?.removeChild(input);
     setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
     s_brakeshoes.hidden = false;
 
@@ -352,9 +352,9 @@ function createStationSelect(span_station, default_text, isDeparture) {
     select.onchange = async function() {
 
         p_turnout_point.style.visibility = 'hidden';
-        select.hidden = true;
         let station = select.options[select.selectedIndex].innerText;
         const stationId = select.value;
+        select?.parentNode?.removeChild(select);
         span_station.dataset.id = stationId;
         const item = isDeparture ? 'departure_station_id' : 'arrival_station_id';
         sessionStorage.setItem(item, stationId);
@@ -389,7 +389,7 @@ function createStationSelect(span_station, default_text, isDeparture) {
 }
 
 function displaySpan(select, span) {
-    select.remove();
+    select?.parentNode?.removeChild(select);
     span.hidden = false;
     hideCheckbox();
 }
@@ -594,9 +594,8 @@ s_departure_traffic_light.onclick = function() {
     }
 
     select.onchange = function () {
-        select.hidden = true;
         let traffic_light = select.options[select.selectedIndex].innerText;
-
+        select?.parentNode?.removeChild(select);
         sessionStorage.setItem('departure_traffic_light', `( ${traffic_light} )`);
         s_departure_traffic_light.innerText = `( ${traffic_light} )`;
         s_departure_traffic_light.style.color = '#33cd9e';
@@ -605,7 +604,7 @@ s_departure_traffic_light.onclick = function() {
 
     select.onblur = function () {
         if (select.value === '0') {
-            select.hidden = true;
+            select?.parentNode?.removeChild(select);
             s_departure_traffic_light.hidden = false;
         }
     }
@@ -629,8 +628,8 @@ s_arrival_traffic_light.onclick = function() {
     }
 
     select.onchange = function() {
-        select.hidden = true;
         let traffic_light = select.options[select.selectedIndex].innerText;
+        select?.parentNode?.removeChild(select);
 
         sessionStorage.setItem('arrival_traffic_light', `( ${traffic_light} )`);
         s_arrival_traffic_light.innerText = `( ${traffic_light} )`;
@@ -640,7 +639,7 @@ s_arrival_traffic_light.onclick = function() {
 
     select.onblur = function() {
         if (select.value === '0') {
-            select.hidden = true;
+            select?.parentNode?.removeChild(select);
             s_arrival_traffic_light.hidden = false;
         }
     }
@@ -790,7 +789,7 @@ s_brake_test.onclick = async function() {
 
     select.onblur = function() {
         if (select.value === '0') {
-            select.hidden = true;
+            select?.parentNode?.removeChild(select);
             s_brake_test.hidden = false;
         }
     }
@@ -956,7 +955,7 @@ function getNumber(input, defaultRecord, itemName, span) {
     }
     sessionStorage.setItem(itemName, value);
     span.innerText = value;
-    input.hidden = true;
+    input?.parentNode?.removeChild(input);
     setValueAndColor(span, itemName, defaultRecord);
     span.hidden = false;
 }
