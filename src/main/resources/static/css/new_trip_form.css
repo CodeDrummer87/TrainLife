@@ -198,7 +198,7 @@ input[type="checkbox"]:checked + label {
 
 .thin-input {
     margin-top: 2px;
-    width: 135px;
+    width: 175px;
     height: 17px;
     padding-left: 4px;
     font-family: Copperplate, serif;
