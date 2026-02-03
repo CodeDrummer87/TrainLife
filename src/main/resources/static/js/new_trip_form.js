@@ -801,149 +801,167 @@ s_brake_test.onclick = async function() {
 
 //region .:: Stations Passed
 const div_stations_passed = document.getElementById('div_stations_passed');
+const p_stations_passed = document.getElementById('p_stations_passed');
 const s_stations_passed = document.getElementById('s_stations_passed');
-let isTabPressed = false;
-let arrowNavigationHandler = false;
-let numberInputHandler = false;
-let currentLength = 0;
-let isCreated = false;
+{
+    let isDigitMode = false;
+    let allowedInput;
+    let tips_div;
+    let tipList;
+    let index = 0;
+    let fixedLength = 0;
+    const directInp = ['Enter', 'Tab', 'ArrowDown', 'ArrowUp'];
 
-s_stations_passed.onclick = async function() {
-    const depotId = 1;  //.:: temporary code :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    const stations = await fetchObservedStations(depotId);
-    if (stations.length === 0) {
-        displayMessage('Список станций проследования пуст / Отсутствует интернет', false);
-        return;
-    }
+    s_stations_passed.onclick = async function() {
+        s_stations_passed.hidden = true;
+        const depot_id = 1; //.:: TODO: temporary code ::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        const db_stations = await fetchObservedStations(depot_id);
 
-    isCreated = false;
-    s_stations_passed.hidden = true;
-    const outerDiv = document.createElement('div');
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.placeholder = 'Введите станцию'
-    input.classList.add('thin-input');
-    input.autofocus = true;
-    outerDiv.appendChild(input);
+        const input = document.createElement('input');
+        input.classList.add('thin-input');
+        input.type = 'text';
+        input.placeholder = 'станция - чч:мм';
 
-    input.oninput = function() {
-        clearTips();
+        input.onkeydown = function (e) {
 
-        if (input.value.trim().length === 0) {
-            isTabPressed = false;
-        }
-        if(isTabPressed) {
-            input.removeEventListener('keydown', arrowNavigationHandler);
-        }
-
-        if (!isTabPressed) {
-            const invalidInput = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-            let length = 0;
-            const val = input.value;
-            if (invalidInput.includes(val)) {
-                input.value = input.value.replace(val, '');
-                return;
-            }
-            const tipList = stations.filter(s => s.toLowerCase().startsWith(val.toLowerCase()));
-            if (tipList.length !== 0) {
-
-                const tips_div = document.createElement('div');
-                tips_div.classList.add('tips');
-                for (let tip of tipList) {
-                    const div = document.createElement('div');
-                    div.innerText = tip;
-                    div.classList.add('tip');
-                    tips_div.appendChild(div);
-                }
-                const tips = tips_div.getElementsByClassName('tip');
-                if (tips !== undefined) {
-                    let selectedIndex = 0;
-                    tips?.[selectedIndex].classList.add('selected-tip');
-
-                    arrowNavigationHandler = function(e) {
-                        if (selectedIndex < tips.length - 1 && e.key === 'ArrowDown') {
-                            e.preventDefault();
-                            tips?.[selectedIndex++].classList.remove('selected-tip');
-                            tips?.[selectedIndex].classList.add('selected-tip');
-                        }
-                        if (selectedIndex > 0 && e.key === 'ArrowUp') {
-                            e.preventDefault();
-                            tips?.[selectedIndex--].classList.remove('selected-tip');
-                            tips?.[selectedIndex].classList.add('selected-tip');
-                        }
-                        if (e.key === 'Tab') {
-                            e.preventDefault();
-                            isTabPressed = true;
-                            const value = `${tips?.[selectedIndex].innerText}\u00A0-\u00A0`;
-                            input.value = value;
-                            length = value.length;
-                            clearTips();
-                            input.focus();
-                            input.setSelectionRange(length, length);
-                            input.removeEventListener('keydown', arrowNavigationHandler);
-                        }
-                    }
-
-                    input.addEventListener('keydown', arrowNavigationHandler);
-                }
-                outerDiv.appendChild(tips_div);
-            }
-        } else {
-            const allowedInput = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Enter'];
-            if (currentLength === 0) {
-                currentLength = input.value.length;
-            }
-            numberInputHandler = function(e) {
-                if (e.key !== 'Backspace') {
-                    if (input.value.length < currentLength + 4) {
-                        if(!allowedInput.includes(e.key)) {
-                            e.preventDefault();
-                        } else {
-                            if (input.value.length === currentLength + 1 && !input.value.includes(':')) {
-                                input.value += ':';
-                            }
-                        }
-                    } else {
+            if (!isDigitMode) {
+                allowedInput = "абвгдеёжзийклмнопрстуфхцчшщыьъэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯ-";
+                if (!allowedInput.includes(e.key)) {
+                    if (e.key !== 'Backspace') {
                         e.preventDefault();
-                        if (e.key === 'Enter') {
-                            if (!isCreated) {
-                                isCreated = true;
-                                isTabPressed = false;
-                                currentLength = 0;
-                                arrowNavigationHandler = false;
-                                e.preventDefault();
-                                ++observedStationCounter;
-                                const text = input.value;
-                                sessionStorage.setItem('observedStationCounter', observedStationCounter);
-                                sessionStorage.setItem('observedStation_' + observedStationCounter, text);
-                                const p = createRecord(text, observedStationCounter, 'observedStation_');
-                                div_stations_passed.appendChild(p);
-
-                                outerDiv.hidden = true;
-                                s_stations_passed.hidden = false;
-                                input.remove();
-                                outerDiv.remove();
-                            }
+                    } else {
+                        if (input.value.length === 0) {
+                            removeAllTips();
                         }
                     }
                 } else {
-                    if (input.value.length === currentLength - 1) {
+                    const val = input.value.toLowerCase();
+                    tipList = db_stations.filter(s => s.toLowerCase().startsWith(val));
+                    removeAllTips();
+
+                    if (tipList.length > 0) {
+                        tips_div = createTipsDiv(tipList);
+                        p_stations_passed.appendChild(tips_div);
+                    }
+                }
+            } else {
+                allowedInput = "0123456789";
+                if (!allowedInput.includes(e.key)) {
+                    if (e.key !== 'Backspace') {
                         e.preventDefault();
+                    } else {
+                        isDigitMode = input.value.length !== 0;
+                    }
+                } else {
+                    if (input.value.length >= fixedLength + 5) {
+                        e.preventDefault();
+                    } else {
+                        if (input.value.length === fixedLength && parseInt(e.key) > 2) {
+                            input.value += '0';
+                        }
+                        if (input.value.length === fixedLength + 1 && input.value[input.value.length - 1] === '2') {
+                            allowedInput = "0123";
+                            if (!allowedInput.includes(e.key)) {
+                                e.preventDefault();
+                            }
+                        }
+                        if (input.value.length === fixedLength + 2 && parseInt(e.key) > 5) {
+                            if (!input.value.includes(':'))
+                                insertSeparator(input, input.value.length);
+                            input.value += '0';
+                        }
+                        if (input.value.length === fixedLength + 3 && parseInt(e.key) > 5) {
+                            input.value += '0';
+                        }
+                        insertSeparator(input, input.value.length);
                     }
                 }
             }
 
-            input.addEventListener('keydown', numberInputHandler);
+            if (directInp.includes(e.key)) {
+                switch (e.key) {
+                    case 'ArrowDown':
+                        if (index < tipList.length - 1)
+                            exchangeTips(true);
+                        break;
+                    case 'ArrowUp':
+                        if (index > 0)
+                            exchangeTips(false);
+                        break;
+                    case 'Tab':
+                        const tips = tips_div.getElementsByTagName('div');
+                        input.value = `${tips[index].innerText}\u00A0-\u00A0`;
+                        fixedLength = input.value.length;
+                        removeAllTips();
+                        isDigitMode = true;
+                        e.preventDefault();
+                        break;
+                    case 'Enter':
+                        const text = input.value;
+                        ++observedStationCounter;
+                        const p = createRecord(text, observedStationCounter, 'observedStation_');
+                        div_stations_passed.appendChild(p);
+                        sessionStorage.setItem('observedStationCounter', observedStationCounter);
+                        sessionStorage.setItem(p.dataset.id, text);
+                        input.remove();
+                        s_stations_passed.hidden = false;
+                        isDigitMode = false;
+                        e.preventDefault();
+                }
+            }
         }
+
+        p_stations_passed.appendChild(input);
+        input.focus();
     }
 
-    div_stations_passed.appendChild(outerDiv);
-}
+    function getTextWidth(text, font) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        context.font = font;
+        return context.measureText(text).width;
+    }
 
-function clearTips() {
-    const div = document.getElementsByClassName('tips')[0];
-    div?.parentNode.removeChild(div);
+    function createTipsDiv(tipList) {
+        index = 0;
+        const div = document.createElement('div');
+        div.classList.add('tips');
+        div.style.marginLeft = `${getTextWidth(p_stations_passed.innerText, window.getComputedStyle(p_stations_passed).fontFamily) * 1.7}px`;
+        for (let tip of tipList) {
+            const tip_div = createTip(tip);
+            div.appendChild(tip_div);
+        }
+        let selected = div.getElementsByClassName('tip')[index];
+        selected.classList.remove('tip');
+        selected.classList.add('selected-tip');
+        return div;
+    }
+
+    function createTip(tip) {
+        const tip_div = document.createElement('div');
+        tip_div.classList.add('tip');
+        tip_div.innerText = tip;
+        return tip_div;
+    }
+
+    function exchangeTips(increment) {
+        const tips = tips_div.getElementsByTagName('div');
+        tips[index].classList.remove('selected-tip');
+        tips[increment ? index++ : index--].classList.add('tip');
+        tips[index].classList.add('selected-tip');
+    }
+
+    function removeAllTips() {
+        tips_div?.parentNode?.removeChild(tips_div);
+    }
+
+    function insertSeparator(input, currentLength) {
+        if (currentLength - fixedLength === 2) {
+            input.value += ':';
+        }
+    }
 }
+//endregion
 
 //.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 function getNumber(input, defaultRecord, itemName, span) {
@@ -955,7 +973,7 @@ function getNumber(input, defaultRecord, itemName, span) {
     }
     sessionStorage.setItem(itemName, value);
     span.innerText = value;
-    input?.parentNode?.removeChild(input);
+    input.hidden = true;
     setValueAndColor(span, itemName, defaultRecord);
     span.hidden = false;
 }

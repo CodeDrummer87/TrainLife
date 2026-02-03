@@ -78,7 +78,7 @@ async function initStations() {
 (() => initStations())();
 
 async function fetchStations() {
-    let depotId = 1;    //.:: temporary code ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    let depotId = 1;    //.:: TODO: temporary code ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     try {
         const uri = i_checkbox.checked ? `/base-list` : `/list`;
         const response = await fetch(url + `/stations/depot/${depotId}` + uri);
@@ -210,7 +210,8 @@ function setRecords(parent, substring) {
     for (let key of keys) {
         if (key.includes(substring)) {
             const number = key.slice(substring.length);
-            const p = createRecord(sessionStorage.getItem(key), number);
+            const item = key.replace(number, '');
+            const p = createRecord(sessionStorage.getItem(key), number, item);
             parent.appendChild(p);
         }
     }
@@ -220,16 +221,16 @@ function createRecord(text, counter, item) {
     const p = document.createElement('p');
     p.innerText = text;
     p.classList.add('pre-element');
+    p.dataset.id = item + counter;
 
     const span = document.createElement('span');
     span.classList.add('red-span');
-    span.dataset.id = counter;
     span.innerText = ' x ';
     span.title = 'удалить';
     span.onclick = async function() {
         const parent = span.parentNode;
+        sessionStorage.removeItem(p.dataset.id);
         parent?.remove();
-        sessionStorage.removeItem(item + span.dataset.id);
     }
     p.appendChild(span);
     return p;
