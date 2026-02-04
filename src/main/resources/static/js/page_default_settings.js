@@ -11,11 +11,9 @@ let allStations = [];
 let departureTrafficLightList = [];
 let arrivalTrafficLightList = [];
 
-let brakeTestCounter = sessionStorage.getItem('brakeTestCounter') === null ?
-    0 : sessionStorage.getItem('brakeTestCounter');
-
-let observedStationCounter = sessionStorage.getItem('observedStationCounter') === null ?
-    0 : sessionStorage.getItem('observedStationCounter');
+let brakeTestCounter = setCounterDefault('brakeTestCounter');
+let observedStationCounter = setCounterDefault('observedStationCounter');
+let limitCounter = setCounterDefault('limitCounter');
 
 async function fetchLocomotiveSeries() {
     try {
@@ -179,6 +177,7 @@ setCheckbox(i_loaded_train, 'checkbox_loaded_train');
 setCheckbox(i_selective_braking, 'checkbox_selective_braking');
 setRecords(div_brake_test, 'brakeTest_');
 setRecords(div_stations_passed, 'observedStation_');
+setRecords(div_limits, 'limit_');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
@@ -212,6 +211,9 @@ function setRecords(parent, substring) {
             const number = key.slice(substring.length);
             const item = key.replace(number, '');
             const p = createRecord(sessionStorage.getItem(key), number, item);
+            if (substring.includes('limit')) {
+                p.classList.add('red-record');
+            }
             parent.appendChild(p);
         }
     }
@@ -245,4 +247,9 @@ function displayMessage(message, success) {
     currentMessageTimerId = setTimeout(function() {
         currentMessage.innerText = '\u00A0';
     }, 5000);
+}
+
+function setCounterDefault(item) {
+    return sessionStorage.getItem(item) === null ?
+        0 : sessionStorage.getItem(item);
 }

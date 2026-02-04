@@ -204,3 +204,11 @@ input[type="checkbox"]:checked + label {
     font-family: Copperplate, serif;
     font-size: 0.7rem;
 }
+
+.fat-input {
+    width: 350px;
+}
+
+.red-record {
+    color: #df922d;
+}
