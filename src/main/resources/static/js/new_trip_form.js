@@ -810,7 +810,7 @@ const s_stations_passed = document.getElementById('s_stations_passed');
     let tipList;
     let index = 0;
     let fixedLength = 0;
-    const directInp = ['Enter', 'Tab', 'ArrowDown', 'ArrowUp'];
+    const directInp = ['Enter', 'Tab', 'ArrowDown', 'ArrowUp', 'Escape'];
 
     s_stations_passed.onclick = async function() {
         s_stations_passed.hidden = true;
@@ -898,15 +898,19 @@ const s_stations_passed = document.getElementById('s_stations_passed');
                         break;
                     case 'Enter':
                         const text = input.value;
-                        ++observedStationCounter;
-                        const p = createRecord(text, observedStationCounter, 'observedStation_');
-                        div_stations_passed.appendChild(p);
-                        sessionStorage.setItem('observedStationCounter', observedStationCounter);
-                        sessionStorage.setItem(p.dataset.id, text);
-                        input.remove();
-                        s_stations_passed.hidden = false;
-                        isDigitMode = false;
-                        e.preventDefault();
+                        if (text.trim().length !== 0) {
+                            ++observedStationCounter;
+                            const p = createRecord(text, observedStationCounter, 'observedStation_');
+                            div_stations_passed.appendChild(p);
+                            sessionStorage.setItem('observedStationCounter', observedStationCounter);
+                            sessionStorage.setItem(p.dataset.id, text);
+                            input.remove();
+                            s_stations_passed.hidden = false;
+                            isDigitMode = false;
+                            e.preventDefault();
+                        }
+                    case 'Escape':
+                        closeEmptyInput(input, s_stations_passed);
                 }
             }
         }
@@ -963,6 +967,50 @@ const s_stations_passed = document.getElementById('s_stations_passed');
 }
 //endregion
 
+//region .:: Speed Limits
+const div_limits = document.getElementById('div_limits');
+const p_limits = document.getElementById('p_limits');
+const s_limits = document.getElementById('s_limits');
+{
+    s_limits.onclick = function() {
+        s_limits.hidden = true;
+
+        const input = document.createElement('input');
+        input.classList.add('thin-input');
+        input.classList.add('fat-input');
+        input.type = 'text';
+        input.placeholder = 'станция/км.пк  № пути - V км/ч[кмч]';
+
+        input.onkeydown = function (e) {
+            if (e.key === 'ч' && input.value.substring(input.value.length - 2).includes('км')) {
+                input.value += '/';
+            }
+            switch(e.key) {
+                case 'Enter':
+                    let text = input.value;
+                    if (text.trim().length !== 0) {
+                        text = `\u2022\u00A0${text}`;
+                        ++limitCounter;
+                        const p = createRecord(text, limitCounter, 'limit_');
+                        p.classList.add('red-record');
+                        div_limits.appendChild(p);
+                        sessionStorage.setItem('limitCounter', limitCounter);
+                        sessionStorage.setItem(p.dataset.id, text);
+                        input.remove();
+                        s_limits.hidden = false;
+                        e.preventDefault();
+                    }
+                case 'Escape':
+                    closeEmptyInput(input, s_limits);
+            }
+        }
+
+        p_limits.appendChild(input);
+        input.focus();
+    }
+}
+//endregion
+
 //.::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 function getNumber(input, defaultRecord, itemName, span) {
     let value = input.value.trim().length === 0 ? defaultRecord : input.value.trim();
@@ -1014,4 +1062,9 @@ function createEmptySelect(default_text) {
     defaultOption.selected = true;
     select.appendChild(defaultOption);
     return select;
+}
+
+function closeEmptyInput(input, span) {
+    input.remove();
+    span.hidden = false;
 }
