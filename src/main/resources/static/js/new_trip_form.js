@@ -910,6 +910,7 @@ let allowedInput;
                             input.remove();
                             s_stations_passed.hidden = false;
                             isDigitMode = false;
+                            removeAllTips();
                         }
                     case 'Escape':
                         closeEmptyInput(input, s_stations_passed);
@@ -933,6 +934,7 @@ let allowedInput;
                 }
                 closeEmptyInput(input, s_stations_passed);
             }
+            removeAllTips();
         }
 
         p_stations_passed.appendChild(input);
@@ -1109,6 +1111,67 @@ const s_stops = document.getElementById('s_stops');
         }
 
         p_stops.appendChild(input);
+        input.focus();
+    }
+}
+//endregion
+
+//region .:: Notes
+const notes = document.getElementById('notes');
+const p_notes = document.getElementById('p_notes');
+const s_notes = document.getElementById('s_notes');
+{
+    s_notes.onclick = function() {
+        isCreated = false;
+        s_notes.hidden = true;
+
+        const input = document.createElement('input');
+        input.classList.add('thin-input');
+        input.classList.add('fat-input');
+        input.type = 'text';
+        input.placeholder = 'добавьте заметку';
+
+        input.onkeydown = function (e) {
+            switch(e.key) {
+                case 'Enter':
+                    let text = input.value;
+                    if (!isCreated && text.trim().length !== 0) {
+                        isCreated = true;
+                        text = `\u2022\u00A0${text}`;
+                        ++noteCounter;
+                        const p = createRecord(text, noteCounter, 'p_note_');
+                        p.classList.add('purple-record');
+                        notes.appendChild(p);
+                        sessionStorage.setItem('noteCounter', noteCounter);
+                        sessionStorage.setItem(p.dataset.id, text);
+                        input.remove();
+                        s_notes.hidden = false;
+                    }
+                case 'Escape':
+                    closeEmptyInput(input, s_notes);
+            }
+        }
+
+        input.onblur = function() {
+            if (!isCreated) {
+                isCreated = true;
+                let text = input.value;
+                if (text.trim().length !== 0) {
+                    text = `\u2022\u00A0${text}`;
+                    ++noteCounter;
+                    const p = createRecord(text, noteCounter, 'p_note_');
+                    p.classList.add('purple-record');
+                    notes.appendChild(p);
+                    sessionStorage.setItem('noteCounter', noteCounter);
+                    sessionStorage.setItem(p.dataset.id, text);
+                    input.remove();
+                    s_notes.hidden = false;
+                }
+                closeEmptyInput(input, s_notes);
+            }
+        }
+
+        p_notes.appendChild(input);
         input.focus();
     }
 }

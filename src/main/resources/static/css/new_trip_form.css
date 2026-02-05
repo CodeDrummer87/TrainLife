@@ -216,3 +216,7 @@ input[type="checkbox"]:checked + label {
 .yellow-record {
     color: #f4bd1f;
 }
+
+.purple-record {
+    color: #e618e6;
+}
