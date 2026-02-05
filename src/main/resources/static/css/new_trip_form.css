@@ -209,6 +209,10 @@ input[type="checkbox"]:checked + label {
     width: 350px;
 }
 
-.red-record {
-    color: #df922d;
+.orange-record {
+    color: #ef5d21;
+}
+
+.yellow-record {
+    color: #f4bd1f;
 }

@@ -11,9 +11,11 @@ let allStations = [];
 let departureTrafficLightList = [];
 let arrivalTrafficLightList = [];
 
+let isCreated = false;
 let brakeTestCounter = setCounterDefault('brakeTestCounter');
 let observedStationCounter = setCounterDefault('observedStationCounter');
 let limitCounter = setCounterDefault('limitCounter');
+let stopCounter = setCounterDefault('stopCounter');
 
 async function fetchLocomotiveSeries() {
     try {
@@ -177,7 +179,8 @@ setCheckbox(i_loaded_train, 'checkbox_loaded_train');
 setCheckbox(i_selective_braking, 'checkbox_selective_braking');
 setRecords(div_brake_test, 'brakeTest_');
 setRecords(div_stations_passed, 'observedStation_');
-setRecords(div_limits, 'limit_');
+setRecords(div_limits, 'o_limit_');
+setRecords(div_stops, 'y_stop_');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
@@ -211,8 +214,11 @@ function setRecords(parent, substring) {
             const number = key.slice(substring.length);
             const item = key.replace(number, '');
             const p = createRecord(sessionStorage.getItem(key), number, item);
-            if (substring.includes('limit')) {
-                p.classList.add('red-record');
+            const className = substring.substring(0, 2).includes('o_') ?
+                'orange-record' : substring.substring(0, 2).includes('y_') ?
+                    'yellow-record' : undefined;
+            if (className !== undefined) {
+                p.classList.add(className);
             }
             parent.appendChild(p);
         }

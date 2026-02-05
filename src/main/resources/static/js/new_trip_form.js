@@ -803,17 +803,19 @@ s_brake_test.onclick = async function() {
 const div_stations_passed = document.getElementById('div_stations_passed');
 const p_stations_passed = document.getElementById('p_stations_passed');
 const s_stations_passed = document.getElementById('s_stations_passed');
+let allowedInput;
 {
     let isDigitMode = false;
-    let allowedInput;
     let tips_div;
     let tipList;
     let index = 0;
     let fixedLength = 0;
-    const directInp = ['Enter', 'Tab', 'ArrowDown', 'ArrowUp', 'Escape'];
+    let directInp = ['Enter', 'Tab', 'ArrowDown', 'ArrowUp', 'Escape'];
 
     s_stations_passed.onclick = async function() {
+        isCreated = false;
         s_stations_passed.hidden = true;
+
         const depot_id = 1; //.:: TODO: temporary code ::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         const db_stations = await fetchObservedStations(depot_id);
 
@@ -899,6 +901,7 @@ const s_stations_passed = document.getElementById('s_stations_passed');
                     case 'Enter':
                         const text = input.value;
                         if (text.trim().length !== 0) {
+                            isCreated = true;
                             ++observedStationCounter;
                             const p = createRecord(text, observedStationCounter, 'observedStation_');
                             div_stations_passed.appendChild(p);
@@ -907,11 +910,28 @@ const s_stations_passed = document.getElementById('s_stations_passed');
                             input.remove();
                             s_stations_passed.hidden = false;
                             isDigitMode = false;
-                            e.preventDefault();
                         }
                     case 'Escape':
                         closeEmptyInput(input, s_stations_passed);
                 }
+            }
+        }
+
+        input.onblur = function() {
+            if (!isCreated) {
+                const text = input.value;
+                if (text.trim().length !== 0) {
+                    isCreated = true;
+                    ++observedStationCounter;
+                    const p = createRecord(text, observedStationCounter, 'observedStation_');
+                    div_stations_passed.appendChild(p);
+                    sessionStorage.setItem('observedStationCounter', observedStationCounter);
+                    sessionStorage.setItem(p.dataset.id, text);
+                    input.remove();
+                    s_stations_passed.hidden = false;
+                    isDigitMode = false;
+                }
+                closeEmptyInput(input, s_stations_passed);
             }
         }
 
@@ -971,8 +991,10 @@ const s_stations_passed = document.getElementById('s_stations_passed');
 const div_limits = document.getElementById('div_limits');
 const p_limits = document.getElementById('p_limits');
 const s_limits = document.getElementById('s_limits');
+allowedInput = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789| ';
 {
     s_limits.onclick = function() {
+        isCreated = false;
         s_limits.hidden = true;
 
         const input = document.createElement('input');
@@ -988,24 +1010,105 @@ const s_limits = document.getElementById('s_limits');
             switch(e.key) {
                 case 'Enter':
                     let text = input.value;
-                    if (text.trim().length !== 0) {
+                    if (!isCreated && text.trim().length !== 0) {
+                        isCreated = true;
                         text = `\u2022\u00A0${text}`;
                         ++limitCounter;
-                        const p = createRecord(text, limitCounter, 'limit_');
-                        p.classList.add('red-record');
+                        const p = createRecord(text, limitCounter, 'o_limit_');
+                        p.classList.add('orange-record');
                         div_limits.appendChild(p);
                         sessionStorage.setItem('limitCounter', limitCounter);
                         sessionStorage.setItem(p.dataset.id, text);
                         input.remove();
                         s_limits.hidden = false;
-                        e.preventDefault();
                     }
                 case 'Escape':
                     closeEmptyInput(input, s_limits);
             }
         }
 
+        input.onblur = function() {
+            if (!isCreated) {
+                isCreated = true;
+                let text = input.value;
+                if (text.trim().length !== 0) {
+                    isCreated = true;
+                    text = `\u2022\u00A0${text}`;
+                    ++limitCounter;
+                    const p = createRecord(text, limitCounter, 'o_limit_');
+                    p.classList.add('orange-record');
+                    div_limits.appendChild(p);
+                    sessionStorage.setItem('limitCounter', limitCounter);
+                    sessionStorage.setItem(p.dataset.id, text);
+                    input.remove();
+                    s_limits.hidden = false;
+                }
+                closeEmptyInput(input, s_limits);
+            }
+        }
+
         p_limits.appendChild(input);
+        input.focus();
+    }
+}
+//endregion
+
+//region .:: Stops
+const div_stops = document.getElementById('div_stops');
+const p_stops = document.getElementById('p_stops');
+const s_stops = document.getElementById('s_stops');
+{
+    s_stops.onclick = function() {
+        isCreated = false;
+        s_stops.hidden = true;
+
+        const input = document.createElement('input');
+        input.classList.add('thin-input');
+        input.classList.add('fat-input');
+        input.type = 'text';
+        input.placeholder = 'станция/км.пк, литера сигнала - чч:мм | чч:мм';
+
+        input.onkeydown = function (e) {
+            switch(e.key) {
+                case 'Enter':
+                    let text = input.value;
+                    if (!isCreated && text.trim().length !== 0) {
+                        isCreated = true;
+                        text = `\u2022\u00A0${text}`;
+                        ++stopCounter;
+                        const p = createRecord(text, stopCounter, 'y_stop_');
+                        p.classList.add('yellow-record');
+                        div_stops.appendChild(p);
+                        sessionStorage.setItem('stopCounter', stopCounter);
+                        sessionStorage.setItem(p.dataset.id, text);
+                        input.remove();
+                        s_stops.hidden = false;
+                    }
+                case 'Escape':
+                    closeEmptyInput(input, s_stops);
+            }
+        }
+
+        input.onblur = function() {
+            if (!isCreated) {
+                isCreated = true;
+                let text = input.value;
+                if (text.trim().length !== 0) {
+                    text = `\u2022\u00A0${text}`;
+                    ++stopCounter;
+                    const p = createRecord(text, stopCounter, 'y_stop_');
+                    p.classList.add('yellow-record');
+                    div_stops.appendChild(p);
+                    sessionStorage.setItem('stopCounter', stopCounter);
+                    sessionStorage.setItem(p.dataset.id, text);
+                    input.remove();
+                    s_stops.hidden = false;
+                }
+                closeEmptyInput(input, s_stops);
+            }
+        }
+
+        p_stops.appendChild(input);
         input.focus();
     }
 }
