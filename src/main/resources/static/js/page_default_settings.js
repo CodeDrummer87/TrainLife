@@ -16,6 +16,7 @@ let brakeTestCounter = setCounterDefault('brakeTestCounter');
 let observedStationCounter = setCounterDefault('observedStationCounter');
 let limitCounter = setCounterDefault('limitCounter');
 let stopCounter = setCounterDefault('stopCounter');
+let noteCounter = setCounterDefault('noteCounter');
 
 async function fetchLocomotiveSeries() {
     try {
@@ -181,6 +182,7 @@ setRecords(div_brake_test, 'brakeTest_');
 setRecords(div_stations_passed, 'observedStation_');
 setRecords(div_limits, 'o_limit_');
 setRecords(div_stops, 'y_stop_');
+setRecords(notes, 'p_note_');
 
 function setValueAndColor(element, item, value) {
     element.innerText = sessionStorage.getItem(item) === null ?
@@ -216,7 +218,8 @@ function setRecords(parent, substring) {
             const p = createRecord(sessionStorage.getItem(key), number, item);
             const className = substring.substring(0, 2).includes('o_') ?
                 'orange-record' : substring.substring(0, 2).includes('y_') ?
-                    'yellow-record' : undefined;
+                    'yellow-record' : substring.substring(0, 2).includes('p_') ?
+                        'purple-record' : undefined;
             if (className !== undefined) {
                 p.classList.add(className);
             }
