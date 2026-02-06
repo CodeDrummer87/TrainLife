@@ -1,0 +1,15 @@
+volumes:
+  trainlife:
+
+services:
+  trainlife_db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=trainlife_db
+    volumes:
+      - trainlife:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5434:5432"
