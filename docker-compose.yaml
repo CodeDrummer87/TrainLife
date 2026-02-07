@@ -3,7 +3,7 @@ volumes:
 
 services:
   trainlife_db:
-    image: postgres
+    image: postgres:17
     restart: always
     environment:
       - POSTGRES_USER=postgres
