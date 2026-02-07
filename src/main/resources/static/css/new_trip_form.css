@@ -31,14 +31,10 @@ legend {
 
 #loco_photo {
     cursor: pointer;
-    width: 90%;
-    height: 50%;
+    width: 20vw;
+    height: 40vh;
     border-radius: 50%;
     outline: none;
-}
-
-#loco_photo:hover {
-    border-color: #70d30e;
 }
 
 #div_date_loco, #div_loco_series_number {
