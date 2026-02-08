@@ -17,6 +17,11 @@ let observedStationCounter = setCounterDefault('observedStationCounter');
 let limitCounter = setCounterDefault('limitCounter');
 let stopCounter = setCounterDefault('stopCounter');
 let noteCounter = setCounterDefault('noteCounter');
+let isUserPhotoLoaded = sessionStorage.getItem('loco-photo') !== null;
+if (isUserPhotoLoaded) {
+    loco_photo.src = sessionStorage.getItem('loco-photo');
+    remove_image_button.innerText = 'убрать фото';
+}
 
 async function fetchLocomotiveSeries() {
     try {

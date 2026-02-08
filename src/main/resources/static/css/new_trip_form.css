@@ -216,3 +216,11 @@ input[type="checkbox"]:checked + label {
 .purple-record {
     color: #c54bc5;
 }
+
+#remove_image_button {
+    color: #105778;
+}
+
+#remove_image_button:hover {
+    color: #c32929;
+}

@@ -149,7 +149,7 @@ span:hover {
     font-size: 0.75rem;
 }
 
-label {
+label, #remove_image_button {
     cursor: pointer;
 }
 
