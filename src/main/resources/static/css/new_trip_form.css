@@ -224,3 +224,7 @@ input[type="checkbox"]:checked + label {
 #remove_image_button:hover {
     color: #c32929;
 }
+
+#s_train_number_reverse {
+    font-size: 0.7rem;
+}

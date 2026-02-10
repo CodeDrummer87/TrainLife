@@ -524,9 +524,12 @@ function hideCheckbox() {
 //region .:: Train Number
 const p_train_number = document.getElementById('p_train_number');
 const s_train_number = document.getElementById('s_train_number');
+const s_train_number_reverse = document.getElementById('s_train_number_reverse');
+s_train_number_reverse.hidden = true;
 
 s_train_number.onclick = function () {
     s_train_number.hidden = true;
+    s_train_number_reverse.hidden = true;
     const input = document.createElement('input');
     input.classList.add('short-field');
     input.value = sessionStorage.getItem('train_number') === null || sessionStorage.getItem('train_number') === 'номер' ?
@@ -537,6 +540,7 @@ s_train_number.onclick = function () {
 
     input.onblur = async function () {
         getNumber(input, 'номер', 'train_number', s_train_number);
+        s_train_number_reverse.hidden = s_train_number.innerText === 'номер';
         activateTrafficLightElement();
 
         departureTrafficLightList = await fetchTrafficLights(s_departure_station, 'станция отправления');
@@ -545,6 +549,7 @@ s_train_number.onclick = function () {
     input.onkeydown = async function (e) {
         if (e.key === 'Enter') {
             getNumber(input, 'номер', 'train_number', s_train_number);
+            s_train_number_reverse.hidden = s_train_number.innerText === 'номер';
             activateTrafficLightElement();
 
             departureTrafficLightList = await fetchTrafficLights(s_departure_station, 'станция отправления');
@@ -555,6 +560,23 @@ s_train_number.onclick = function () {
     checkAvailableInput(input, 3);
     p_train_number.appendChild(input);
     input.focus();
+}
+
+s_train_number_reverse.onclick = function() {
+    if (s_train_number_reverse.innerText === '\u21C4') {
+        let trainNumber = parseInt(s_train_number.innerText);
+        s_train_number.innerText += `\u00A0\u2192\u00A0${++trainNumber}`;
+        s_train_number_reverse.innerText = '\u00A0\u21C4\u00A0';
+
+        s_train_number_reverse.innerText = 'x';
+        s_train_number_reverse.classList.add('red-span');
+    } else {
+        s_train_number.innerText = s_train_number.innerText.substring(0, 4);
+        s_train_number_reverse.innerText = '\u00A0x\u00A0';
+
+        s_train_number_reverse.innerText = '\u21C4';
+        s_train_number_reverse.classList.remove('red-span');
+    }
 }
 //endregion
 
