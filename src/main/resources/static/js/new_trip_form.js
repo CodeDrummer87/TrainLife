@@ -525,11 +525,12 @@ function hideCheckbox() {
 const p_train_number = document.getElementById('p_train_number');
 const s_train_number = document.getElementById('s_train_number');
 const s_train_number_reverse = document.getElementById('s_train_number_reverse');
-s_train_number_reverse.hidden = true;
 
 s_train_number.onclick = function () {
     s_train_number.hidden = true;
     s_train_number_reverse.hidden = true;
+    s_train_number_reverse.innerText = '\u21C4';
+    s_train_number_reverse.classList.remove('red-span');
     const input = document.createElement('input');
     input.classList.add('short-field');
     input.value = sessionStorage.getItem('train_number') === null || sessionStorage.getItem('train_number') === 'номер' ?
@@ -539,21 +540,11 @@ s_train_number.onclick = function () {
     input.autofocus = true;
 
     input.onblur = async function () {
-        getNumber(input, 'номер', 'train_number', s_train_number);
-        s_train_number_reverse.hidden = s_train_number.innerText === 'номер';
-        activateTrafficLightElement();
-
-        departureTrafficLightList = await fetchTrafficLights(s_departure_station, 'станция отправления');
-        arrivalTrafficLightList = await fetchTrafficLights(s_arrival_station, 'станция прибытия');
+        await setTrainNumber(input);
     }
     input.onkeydown = async function (e) {
         if (e.key === 'Enter') {
-            getNumber(input, 'номер', 'train_number', s_train_number);
-            s_train_number_reverse.hidden = s_train_number.innerText === 'номер';
-            activateTrafficLightElement();
-
-            departureTrafficLightList = await fetchTrafficLights(s_departure_station, 'станция отправления');
-            arrivalTrafficLightList = await fetchTrafficLights(s_arrival_station, 'станция прибытия');
+            await setTrainNumber(input);
         }
     }
 
@@ -563,20 +554,34 @@ s_train_number.onclick = function () {
 }
 
 s_train_number_reverse.onclick = function() {
+    let symbol;
     if (s_train_number_reverse.innerText === '\u21C4') {
         let trainNumber = parseInt(s_train_number.innerText);
         s_train_number.innerText += `\u00A0\u2192\u00A0${++trainNumber}`;
-        s_train_number_reverse.innerText = '\u00A0\u21C4\u00A0';
 
-        s_train_number_reverse.innerText = 'x';
+        symbol = '\u00A0x\u00A0';
         s_train_number_reverse.classList.add('red-span');
     } else {
-        s_train_number.innerText = s_train_number.innerText.substring(0, 4);
-        s_train_number_reverse.innerText = '\u00A0x\u00A0';
+        const spacePos = s_train_number.innerText.indexOf('\u00A0');
+        s_train_number.innerText = s_train_number.innerText.substring(0, spacePos);
 
-        s_train_number_reverse.innerText = '\u21C4';
+        symbol = '\u21C4';
         s_train_number_reverse.classList.remove('red-span');
     }
+    sessionStorage.setItem('train_number', s_train_number.innerText);
+    s_train_number_reverse.innerText = symbol;
+    sessionStorage.setItem('train_number_reverse_symbol', symbol);
+}
+
+async function setTrainNumber(input) {
+    getNumber(input, 'номер', 'train_number', s_train_number);
+    s_train_number_reverse.hidden = s_train_number.innerText === 'номер';
+    sessionStorage.setItem('train_number_reverse_symbol', '\u21C4');
+    sessionStorage.setItem('s_train_number_reverse_hidden', s_train_number.innerText === 'номер');
+    activateTrafficLightElement();
+
+    departureTrafficLightList = await fetchTrafficLights(s_departure_station, 'станция отправления');
+    arrivalTrafficLightList = await fetchTrafficLights(s_arrival_station, 'станция прибытия');
 }
 //endregion
 
