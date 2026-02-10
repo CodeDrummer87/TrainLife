@@ -169,6 +169,13 @@ setValueAndColor(s_brakeshoes, 'brakeshoes', 'количество');
 setValueAndColor(s_departure_station, 'departure_station', 'станция отправления');
 setValueAndColor(s_arrival_station, 'arrival_station', 'станция прибытия');
 setValueAndColor(s_train_number, 'train_number', 'номер');
+s_train_number_reverse.hidden = sessionStorage.getItem('s_train_number_reverse_hidden') === null ?
+    true : JSON.parse(sessionStorage.getItem('s_train_number_reverse_hidden'));
+s_train_number_reverse.innerText = sessionStorage.getItem('train_number_reverse_symbol') === null ?
+    '\u21C4' : sessionStorage.getItem('train_number_reverse_symbol');
+ if (s_train_number_reverse.innerText === '\u00A0x\u00A0') {
+     s_train_number_reverse.classList.add('red-span');
+ }
 checkValueStation(s_departure_station, s_train_number, p_departure_traffic_light, 'станция отправления', 'номер');
 checkValueStation(s_arrival_station, s_train_number, p_arrival_traffic_light, 'станция прибытия', 'номер');
 setValueAndColor(s_train_weight, 'train_weight', 'масса поезда');
