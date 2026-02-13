@@ -527,30 +527,32 @@ const s_train_number = document.getElementById('s_train_number');
 const s_train_number_reverse = document.getElementById('s_train_number_reverse');
 
 s_train_number.onclick = function () {
-    s_train_number.hidden = true;
-    s_train_number_reverse.hidden = true;
-    s_train_number_reverse.innerText = '\u21C4';
-    s_train_number_reverse.classList.remove('red-span');
-    const input = document.createElement('input');
-    input.classList.add('short-field');
-    input.value = sessionStorage.getItem('train_number') === null || sessionStorage.getItem('train_number') === 'номер' ?
-        '' : sessionStorage.getItem('train_number');
-    input.placeholder = 'номер';
-    input.focus();
-    input.autofocus = true;
+    if (!s_train_number.innerText.includes('\u2192')) {
+        s_train_number.hidden = true;
+        s_train_number_reverse.hidden = true;
+        s_train_number_reverse.innerText = '\u21C4';
+        s_train_number_reverse.classList.remove('red-span');
+        const input = document.createElement('input');
+        input.classList.add('short-field');
+        input.value = sessionStorage.getItem('train_number') === null || sessionStorage.getItem('train_number') === 'номер' ?
+            '' : sessionStorage.getItem('train_number');
+        input.placeholder = 'номер';
+        input.focus();
+        input.autofocus = true;
 
-    input.onblur = async function () {
-        await setTrainNumber(input);
-    }
-    input.onkeydown = async function (e) {
-        if (e.key === 'Enter') {
+        input.onblur = async function () {
             await setTrainNumber(input);
         }
-    }
+        input.onkeydown = async function (e) {
+            if (e.key === 'Enter') {
+                await setTrainNumber(input);
+            }
+        }
 
-    checkAvailableInput(input, 3);
-    p_train_number.appendChild(input);
-    input.focus();
+        checkAvailableInput(input, 3);
+        p_train_number.appendChild(input);
+        input.focus();
+    }
 }
 
 s_train_number_reverse.onclick = function() {
